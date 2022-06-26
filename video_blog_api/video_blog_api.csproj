@@ -13,4 +13,12 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="D:\Files\Learning\Developments\CS\video_blog\video_blog_api\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="D:\Files\Learning\Developments\CS\video_blog\video_blog_api\.editorconfig" />
+  </ItemGroup>
+
 </Project>
