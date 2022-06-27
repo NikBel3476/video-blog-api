@@ -1,4 +1,9 @@
+﻿using System.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Npgsql;
+using video_blog_api.Models;
+using Newtonsoft.Json.Linq;
 
 namespace video_blog_api.Controllers
 {
@@ -12,22 +17,35 @@ namespace video_blog_api.Controllers
 		};
 
 		private readonly ILogger<WeatherForecastController> _logger;
+		private readonly IConfiguration _configuration;
 
-		public WeatherForecastController(ILogger<WeatherForecastController> logger)
+		public WeatherForecastController(ILogger<WeatherForecastController> logger, IConfiguration configuration)
 		{
 			_logger = logger;
+			_configuration = configuration;
 		}
 
 		[HttpGet(Name = "GetWeatherForecast")]
-		public IEnumerable<WeatherForecast> Get()
+		public JsonResult Get()
 		{
-			return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+			string query = @"select * from Users";
+			DataTable table = new DataTable();
+			string sqlDataSource = _configuration.GetConnectionString("videoBlogCon");
+			NpgsqlDataReader myReader;
+			using(NpgsqlConnection myCon = new NpgsqlConnection(sqlDataSource))
 			{
-				Date = DateTime.Now.AddDays(index),
-				TemperatureC = Random.Shared.Next(-20, 55),
-				Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-			})
-			.ToArray();
+				myCon.Open();
+				using (NpgsqlCommand command = new NpgsqlCommand(query, myCon))
+				{
+					myReader = command.ExecuteReader();
+					table.Load(myReader);
+					myReader.Close();
+					myCon.Close();
+				}
+			}
+
+			return new JsonResult(table);
+
 		}
 	}
 }
