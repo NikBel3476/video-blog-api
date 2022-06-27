@@ -11,14 +11,20 @@ namespace video_blog_api.Repositories
 		{
 			_context = context;
 		}
-		public Task<List<User>> Create(List<User> countryData)
+		public async Task<User> Create(User user)
 		{
-			throw new NotImplementedException();
+			_context.users.Add(user);
+			await _context.SaveChangesAsync();
+			return user;
 		}
 
-		public Task Delete(int id)
+		public async Task Delete(int id)
 		{
-			throw new NotImplementedException();
+			var userToDelete = await _context.users.FindAsync(id);
+			if (userToDelete == null) return;
+
+			_context.users.Remove(userToDelete);
+			await _context.SaveChangesAsync();
 		}
 
 		public async Task<IEnumerable<User>> Get()
@@ -26,9 +32,10 @@ namespace video_blog_api.Repositories
 			return await _context.users.ToListAsync();
 		}
 
-		public Task Update(User countryData)
+		public async Task Update(User user)
 		{
-			throw new NotImplementedException();
+			_context.Entry(user).State = EntityState.Modified;
+			await _context.SaveChangesAsync();
 		}
 	}
 }
