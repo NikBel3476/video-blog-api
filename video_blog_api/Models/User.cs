@@ -6,5 +6,7 @@
 		public string user_name { get; set; }
 		public string user_login { get; set; }
 		public string user_password { get; set; }
+		public string user_hash { get; set; }
+		public string user_salt { get; set; }
 	}
 }
