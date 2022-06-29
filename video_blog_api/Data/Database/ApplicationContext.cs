@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using video_blog_api.Models;
+using video_blog_api.Data.Models;
 
-namespace video_blog_api.Database
+namespace video_blog_api.Data.Database
 {
 	public class ApplicationContext: DbContext
 	{
@@ -13,7 +13,7 @@ namespace video_blog_api.Database
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			modelBuilder.Entity<User>().HasKey(c => new { c.user_id });
+			modelBuilder.Entity<User>().HasKey(c => new { c.id });
 		}
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{

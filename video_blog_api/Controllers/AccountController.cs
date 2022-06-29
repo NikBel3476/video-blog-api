@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using video_blog_api.Models;
-using video_blog_api.Repositories;
+using video_blog_api.Domain.Models;
+using video_blog_api.Domain.Repositories;
 
 namespace video_blog_api.Controllers
 {
@@ -15,14 +15,14 @@ namespace video_blog_api.Controllers
 			_userRepository = userRepository;
 		}
 
-		[HttpGet("getUsers")]
-		public async Task<IEnumerable<User>> GetAllUsers()
+		[HttpGet("all")]
+		public async Task<IEnumerable<UserDTO>> GetAllUsers()
 		{
 			return await _userRepository.Get();
 		}
 
-		[HttpPost("registerUser")]
-		public async Task<bool> CreateUser(User user)
+		[HttpPost("register")]
+		public async Task<bool> CreateUser(UserDTO user)
 		{
 			try
 			{
@@ -35,7 +35,7 @@ namespace video_blog_api.Controllers
 			} 
 		}
  
-		[HttpDelete("deleteUser")]
+		[HttpDelete("delete")]
 		public async Task<bool> DeleteUser(int id)
 		{
 			try
@@ -49,8 +49,8 @@ namespace video_blog_api.Controllers
 			}
 		}
 		
-		[HttpPut("UpdatePerson")]
-		public async Task<bool> UpdatePerson(User user)
+		[HttpPut("update")]
+		public async Task<bool> UpdatePerson(UserDTO user)
 		{
 			try
 			{

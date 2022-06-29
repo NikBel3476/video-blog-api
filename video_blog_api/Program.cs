@@ -1,5 +1,6 @@
-﻿using video_blog_api.Database;
-using video_blog_api.Repositories;
+﻿using video_blog_api.Data.Database;
+using video_blog_api.Data.Repositories;
+using video_blog_api.Domain.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
