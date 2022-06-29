@@ -2,11 +2,11 @@
 {
 	public class User
 	{
-		public int user_id { get; set; }
-		public string user_name { get; set; }
-		public string user_login { get; set; }
-		public string user_password { get; set; }
-		public string user_hash { get; set; }
-		public string user_salt { get; set; }
+		public int id { get; set; }
+		public string name { get; set; }
+		public string login { get; set; }
+		public string password { get; set; }
+		public string hash { get; set; }
+		public string salt { get; set; }
 	}
 }

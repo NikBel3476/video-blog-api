@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using video_blog_api.Database;
 using video_blog_api.Models;
 using video_blog_api.Security;
@@ -16,9 +14,9 @@ namespace video_blog_api.Repositories
 		}
 		public async Task<User> Create(User user)
 		{
-			string[] pasHash = PasswordSecurity.GenerateHash(user.user_password).Split(':');
-			user.user_hash = pasHash[0];
-			user.user_salt = pasHash[1];
+			PasswordSecurity.GeneratePasswordHash(user.password, out byte[] passwordHash, out byte[] passwordSalt);
+			user.hash = Convert.ToBase64String(passwordHash);
+			user.salt = Convert.ToBase64String(passwordSalt);
 			_context.users.Add(user);
 			await _context.SaveChangesAsync();
 			return user;
@@ -43,9 +41,5 @@ namespace video_blog_api.Repositories
 			_context.Entry(user).State = EntityState.Modified;
 			await _context.SaveChangesAsync();
 		}
-
-		#region Extra methods
-		
-		#endregion
 	}
 }
