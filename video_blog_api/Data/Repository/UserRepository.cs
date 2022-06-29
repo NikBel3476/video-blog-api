@@ -1,51 +1,53 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using video_blog_api.Data.Database;
-using video_blog_api.Domain.Models;
 using video_blog_api.Data.Models;
-using video_blog_api.Security;
-using video_blog_api.Utils;
 using video_blog_api.Domain.Repositories;
 
-namespace video_blog_api.Data.Repositories
+namespace video_blog_api.Data.Repository
 {
 	public class UserRepository : IUserRepository
 	{
-		private readonly ApplicationContext _context;
-		public UserRepository(ApplicationContext context)
+		private readonly ApplicationDbContext _context;
+		public UserRepository(ApplicationDbContext context)
 		{
 			_context = context;
 		}
-		public async Task<UserDTO> Create(UserDTO user)
+
+		public async Task<List<User>> FindAll()
 		{
-			User userData = CustomUserMap.MapToData(user);
-			PasswordSecurity.GeneratePasswordHash(user.password, out byte[] passwordHash, out byte[] passwordSalt);
-			userData.hash = Convert.ToBase64String(passwordHash);
-			userData.salt = Convert.ToBase64String(passwordSalt);
-			_context.users.Add(userData);
-			await _context.SaveChangesAsync();
-			return user;
+			return await _context.users.ToListAsync();
 		}
 
-		public async Task Delete(int id)
+		public async Task<User?> FindOne(long id)
 		{
-			var userToDelete = await _context.users.FindAsync(id);
-			if (userToDelete == null) return;
-
-			_context.users.Remove(userToDelete);
-			await _context.SaveChangesAsync();
+			return await _context.users.FindAsync(id);
 		}
 
-		public async Task<IEnumerable<UserDTO>> Get()
+		public async Task<User?> FindOne(string name)
 		{
-			var users = await _context.users.ToListAsync();
-			return CustomUserMap.MapToDTO(users);
+			return await _context.users.FirstOrDefaultAsync(u => u.name == name);
 		}
 
-		public async Task Update(UserDTO userDto)
+		public async Task<User> Create(User user)
 		{
-			var userData = CustomUserMap.MapToData(userDto);
-			_context.Entry(userData).State = EntityState.Modified;
+			var userEntry = _context.users.Add(user);
 			await _context.SaveChangesAsync();
+			return userEntry.Entity;
+		}
+
+		public async Task<User> Update(User user)
+		{
+			var userEntry = _context.Entry(user);
+			userEntry.State = EntityState.Modified;
+			await _context.SaveChangesAsync();
+			return userEntry.Entity;
+		}
+
+		public async Task<User> Delete(User user)
+		{
+			var userEntry = _context.users.Remove(user);
+			await _context.SaveChangesAsync();
+			return userEntry.Entity;
 		}
 	}
 }

@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using video_blog_api.Data.Models;
 using video_blog_api.Domain.Models;
 using video_blog_api.Domain.Repositories;
+using video_blog_api.Security;
+using video_blog_api.Utils;
 
 namespace video_blog_api.Controllers
 {
@@ -16,51 +19,62 @@ namespace video_blog_api.Controllers
 		}
 
 		[HttpGet("all")]
-		public async Task<IEnumerable<UserDTO>> GetAllUsers()
+		public async Task<ActionResult<IEnumerable<UserDTO>?>> GetAllUsers()
 		{
-			return await _userRepository.Get();
+			return Ok(CustomUserMap.MapToDTO(await _userRepository.FindAll()));
 		}
 
-		[HttpPost("register")]
-		public async Task<bool> CreateUser(UserDTO user)
+		[HttpPost("registration")]
+		public async Task<ActionResult<UserDTO>> CreateUser([FromBody] UserDTO userDto)
 		{
 			try
 			{
-				await _userRepository.Create(user);
-				return true;
+				User user = CustomUserMap.MapToData(userDto);
+				var candidate = await _userRepository.FindOne(userDto.login);
+				if (candidate is not null)
+					return BadRequest("Пользователь с таким логином уже существует");
+				PasswordSecurity.GeneratePasswordHash(userDto.password, out byte[] passwordHash, out byte[] passwordSalt);
+				user.hash = Convert.ToBase64String(passwordHash);
+				user.salt = Convert.ToBase64String(passwordSalt);
+				var createdUser = await _userRepository.Create(user);
+				return Ok(CustomUserMap.MapToDTO(createdUser));
 			}
 			catch (Exception)
 			{
-				return false;
+				return StatusCode(500);
 			} 
 		}
  
 		[HttpDelete("delete")]
-		public async Task<bool> DeleteUser(int id)
+		public async Task<ActionResult<UserDTO>> DeleteUser(long id)
 		{
 			try
 			{
-				await _userRepository.Delete(id);
-				return true;
+				var user = await _userRepository.FindOne(id);
+				if (user is null) 
+					return NotFound("Пользователь не найден");
+				var deletedUser = await _userRepository.Delete(user);
+				return Ok(deletedUser);
 			}
 			catch (Exception)
 			{
-				return false;
+				return StatusCode(500);
 			}
 		}
 		
 		[HttpPut("update")]
-		public async Task<bool> UpdatePerson(UserDTO user)
+		public async Task<ActionResult> UpdatePerson(UserDTO user)
 		{
-			try
-			{
-				await _userRepository.Update(user);
-				return true;
-			}
-			catch (Exception)
-			{
-				return false;
-			}
+			return StatusCode(501);
+			//try
+			//{
+			//	await _userRepository.Update(user);
+			//	return true;
+			//}
+			//catch (Exception)
+			//{
+			//	return false;
+			//}
 		}
 	}
 }
