@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using video_blog_api.Models;
-using video_blog_api.Repositories;
+using video_blog_api.Domain.Models;
+using video_blog_api.Domain.Repositories;
 
 namespace video_blog_api.Controllers
 {
@@ -16,13 +16,13 @@ namespace video_blog_api.Controllers
 		}
 
 		[HttpGet("all")]
-		public async Task<IEnumerable<User>> GetAllUsers()
+		public async Task<IEnumerable<UserDTO>> GetAllUsers()
 		{
 			return await _userRepository.Get();
 		}
 
 		[HttpPost("register")]
-		public async Task<bool> CreateUser(User user)
+		public async Task<bool> CreateUser(UserDTO user)
 		{
 			try
 			{
@@ -50,7 +50,7 @@ namespace video_blog_api.Controllers
 		}
 		
 		[HttpPut("update")]
-		public async Task<bool> UpdatePerson(User user)
+		public async Task<bool> UpdatePerson(UserDTO user)
 		{
 			try
 			{

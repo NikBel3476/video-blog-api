@@ -1,4 +1,4 @@
-﻿namespace video_blog_api.Models
+﻿namespace video_blog_api.Data.Models
 {
 	public class User
 	{
