@@ -15,13 +15,13 @@ namespace video_blog_api.Controllers
 			_userRepository = userRepository;
 		}
 
-		[HttpGet("getUsers")]
+		[HttpGet("all")]
 		public async Task<IEnumerable<User>> GetAllUsers()
 		{
 			return await _userRepository.Get();
 		}
 
-		[HttpPost("registerUser")]
+		[HttpPost("register")]
 		public async Task<bool> CreateUser(User user)
 		{
 			try
@@ -35,7 +35,7 @@ namespace video_blog_api.Controllers
 			} 
 		}
  
-		[HttpDelete("deleteUser")]
+		[HttpDelete("delete")]
 		public async Task<bool> DeleteUser(int id)
 		{
 			try
@@ -49,7 +49,7 @@ namespace video_blog_api.Controllers
 			}
 		}
 		
-		[HttpPut("UpdatePerson")]
+		[HttpPut("update")]
 		public async Task<bool> UpdatePerson(User user)
 		{
 			try

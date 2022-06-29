@@ -1,50 +1,41 @@
 ﻿using System.Security.Cryptography;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 namespace video_blog_api.Security
 {
-	public class PasswordSecurity
+	public static class PasswordSecurity
 	{
-		const int SALT_BYTES = 24;
-		const int KEY_BYTES = 24;
-
-		/// <summary>
-		/// Generates string that contains hash and salt
-		/// </summary>
-		/// <param name="inputString">String to hash</param>
-		/// <returns>String format hash:salt</returns>
-		public static string GenerateHash(string inputString)
-		{
-			byte[] salt = new byte[SALT_BYTES];
-
-			using (var rng = RandomNumberGenerator.Create())
-			{
-				rng.GetBytes(salt);
-			}
-
-			byte[] hash = HashWithPBKDF2(inputString, salt, KEY_BYTES);
-			
-			return $"{Convert.ToBase64String(hash)}:{Convert.ToBase64String(salt)}";
-		}
-
-
-		public static bool VerifyPassword()
-		{
-			return true;
-		}
+		private const ushort SALT_BYTES_SIZE = 128 / 8;
+		private const int ITERATION_COUNT = 100000;
+		private const ushort NUM_BYTES = 512 / 8;
 
 		/// <summary>
 		/// Generate hash key
 		/// </summary>
 		/// <param name="password">String to hash</param>
-		/// <param name="salt">Salt to hash</param>
-		/// <param name="outputBytes">The number of pseudo-random key bytes for this object</param>
+		/// /// <param name="passwordHash">Hash based on password and salt</param>
+		/// <param name="passwordSalt">Salt to hash</param>
 		/// <returns>Hash key byte array</returns>
-		private static byte[] HashWithPBKDF2(string password, byte[] salt, int outputBytes)
+		public static void GeneratePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
 		{
-			using (Rfc2898DeriveBytes pbkdf2 = new Rfc2898DeriveBytes(password, salt))
+			passwordSalt = new byte[SALT_BYTES_SIZE];
+
+			using (var hmac = new HMACSHA512())
 			{
-				return pbkdf2.GetBytes(outputBytes);
+				passwordSalt = hmac.Key;
 			}
+
+			passwordHash = KeyDerivation.Pbkdf2(
+				password: password,
+				salt: passwordSalt,
+				prf: KeyDerivationPrf.HMACSHA512,
+				iterationCount: ITERATION_COUNT,
+				numBytesRequested: NUM_BYTES
+			);
+		}
+		public static bool VerifyPassword()
+		{
+			throw new NotImplementedException();
 		}
 	}
 }
