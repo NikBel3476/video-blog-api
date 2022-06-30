@@ -5,8 +5,7 @@
 		public int id { get; set; } = default!;
 		public string name { get; set; } = string.Empty;
 		public string login { get; set; } = string.Empty;
-		public string password { get; set; } = string.Empty;
-		public string hash { get; set; } = string.Empty;
-		public string salt { get; set; } = string.Empty;
+		public string passwordHash { get; set; } = string.Empty;
+		public string passwordSalt { get; set; } = string.Empty;
 	}
 }

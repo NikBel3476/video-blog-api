@@ -23,9 +23,9 @@ namespace video_blog_api.Data.Repository
 			return await _context.users.FindAsync(id);
 		}
 
-		public async Task<User?> FindOne(string name)
+		public async Task<User?> FindOne(string login)
 		{
-			return await _context.users.FirstOrDefaultAsync(u => u.name == name);
+			return await _context.users.FirstOrDefaultAsync(u => u.login == login);
 		}
 
 		public async Task<User> Create(User user)

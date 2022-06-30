@@ -9,7 +9,7 @@ namespace video_blog_api.Data.Database
 		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
 		: base(options)
 		{
-			Database.EnsureCreated();
+			//Database.EnsureCreated();
 		}
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
