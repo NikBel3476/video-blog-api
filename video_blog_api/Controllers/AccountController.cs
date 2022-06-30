@@ -1,6 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using video_blog_api.Data.Models;
@@ -24,12 +25,7 @@ namespace video_blog_api.Controllers
 			_userRepository = userRepository;
 		}
 
-		[HttpGet("all")]
-		public async Task<ActionResult<IEnumerable<UserDTO>?>> GetAllUsers()
-		{
-			return Ok(CustomUserMap.MapToDTO(await _userRepository.FindAll()));
-		}
-
+		[AllowAnonymous]
 		[HttpPost("registration")]
 		public async Task<ActionResult<string>> CreateUser([FromBody] UserDTO userDto)
 		{
@@ -53,6 +49,7 @@ namespace video_blog_api.Controllers
 			}
 		}
 
+		[AllowAnonymous]
 		[HttpPost("login")]
 		public async Task<ActionResult<string>> Login([FromBody] UserDTO userDto)
 		{

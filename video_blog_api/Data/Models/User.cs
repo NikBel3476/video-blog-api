@@ -2,7 +2,7 @@
 {
 	public class User
 	{
-		public int id { get; set; } = default!;
+		public long id { get; set; } = default!;
 		public string name { get; set; } = string.Empty;
 		public string login { get; set; } = string.Empty;
 		public string passwordHash { get; set; } = string.Empty;
