@@ -2,11 +2,10 @@
 {
 	public class User
 	{
-		public int id { get; set; }
-		public string name { get; set; }
-		public string login { get; set; }
-		public string password { get; set; }
-		public string hash { get; set; }
-		public string salt { get; set; }
+		public long id { get; set; } = default!;
+		public string name { get; set; } = string.Empty;
+		public string login { get; set; } = string.Empty;
+		public string passwordHash { get; set; } = string.Empty;
+		public string passwordSalt { get; set; } = string.Empty;
 	}
 }
