@@ -1,6 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using video_blog_api.Data.Models;
 using video_blog_api.Domain.Models;
 using video_blog_api.Domain.Repositories;
+using video_blog_api.Security;
+using video_blog_api.Utils;
+using video_blog_api.Utils.Jwt;
 
 namespace video_blog_api.Controllers
 {
@@ -9,58 +14,72 @@ namespace video_blog_api.Controllers
 	public class AccountController : ControllerBase
 	{
 		private readonly IUserRepository _userRepository;
+		private JwtService _jwtService;
 
-		public AccountController(IUserRepository userRepository)
+		public AccountController(
+			IConfiguration configuration,
+			IUserRepository userRepository,
+			JwtService jwtService
+		)
 		{
 			_userRepository = userRepository;
+			_jwtService = jwtService;
 		}
 
-		[HttpGet("all")]
-		public async Task<IEnumerable<UserDTO>> GetAllUsers()
+		[AllowAnonymous]
+		[HttpPost("registration")]
+		public async Task<ActionResult<string>> CreateUser(UserDTO userDto)
 		{
-			return await _userRepository.Get();
+			User user = CustomUserMap.MapToData(userDto);
+			var candidate = await _userRepository.FindOne(userDto.login);
+			if (candidate is not null)
+				return BadRequest("Пользователь с таким логином уже существует");
+
+			user.passwordHash = PasswordSecurity.GeneratePasswordHash(userDto.password);
+			var createdUser = await _userRepository.Create(user);
+
+			return Ok(_jwtService.GenerateJwtToken(createdUser));
 		}
 
-		[HttpPost("register")]
-		public async Task<bool> CreateUser(UserDTO user)
+		[AllowAnonymous]
+		[HttpPost("login")]
+		public async Task<ActionResult<string>> Login(UserDTO userDto)
 		{
-			try
-			{
-				await _userRepository.Create(user);
-				return true;
-			}
-			catch (Exception)
-			{
-				return false;
-			} 
+			var user = await _userRepository.FindOne(userDto.login);
+			if (user is null)
+				return BadRequest("Пользователь с таким логином не найден");
+
+			if (!PasswordSecurity.VerifyPassword(userDto.password, user.passwordHash))
+				return BadRequest("Неверный пароль");
+
+			return Ok(_jwtService.GenerateJwtToken(user));
 		}
- 
+
+		// FIXME: replace id to token
 		[HttpDelete("delete")]
-		public async Task<bool> DeleteUser(int id)
+		public async Task<ActionResult<UserDTO>> DeleteUser(long id)
 		{
-			try
-			{
-				await _userRepository.Delete(id);
-				return true;
-			}
-			catch (Exception)
-			{
-				return false;
-			}
+
+			var user = await _userRepository.FindOne(id);
+			if (user is null)
+				return NotFound("Пользователь не найден");
+			var deletedUser = await _userRepository.Delete(user);
+			return Ok(deletedUser);
 		}
-		
+
 		[HttpPut("update")]
-		public async Task<bool> UpdatePerson(UserDTO user)
+		public async Task<ActionResult> UpdatePerson(UserDTO user)
 		{
-			try
-			{
-				await _userRepository.Update(user);
-				return true;
-			}
-			catch (Exception)
-			{
-				return false;
-			}
+			return StatusCode(501);
+			//try
+			//{
+			//	await _userRepository.Update(user);
+			//	return true;
+			//}
+			//catch (Exception)
+			//{
+			//	return false;
+			//}
 		}
 	}
 }
