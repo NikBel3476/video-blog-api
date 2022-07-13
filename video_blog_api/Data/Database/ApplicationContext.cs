@@ -14,7 +14,9 @@ namespace video_blog_api.Data.Database
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			modelBuilder.Entity<User>().HasKey(c => new { c.id });
+			modelBuilder.Entity<User>().HasKey(u => u.id);
+			modelBuilder.Entity<User>().HasAlternateKey(u => u.login);
+			modelBuilder.Entity<User>().HasIndex(u => u.login);
 		}
 	}
 }
