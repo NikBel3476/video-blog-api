@@ -1,7 +1,7 @@
 ﻿using Domain.Core;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Data
+namespace Infrastructure.Data.Database
 {
 	public class UserContext : DbContext
 	{

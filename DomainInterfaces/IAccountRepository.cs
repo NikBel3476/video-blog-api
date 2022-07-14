@@ -4,10 +4,8 @@ namespace Domain.Interfaces
 {
 	public interface IAccountRepository
 	{
-		User Get(long id);
-		IEnumerable<User> GetAll();
-		void Create(User account);
-		void Update(User account);
-		void Delete(long id);
+		void Create(Account account);
+		void Update(Account account);
+		void Delete(Account account);
 	}
 }

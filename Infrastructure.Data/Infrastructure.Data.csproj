@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DomainCore\Domain.Core.csproj" />
+    <ProjectReference Include="..\DomainInterfaces\Domain.Interfaces.csproj" />
   </ItemGroup>
 
 </Project>
