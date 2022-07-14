@@ -5,7 +5,7 @@ VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "video_blog_api", "video_blog_api\video_blog_api.csproj", "{44DB07F1-B0C9-4022-9759-F6C6B93307CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DomainCore", "DomainCore\DomainCore.csproj", "{489C1D9D-E5AD-4768-A8A0-F496ABC692C0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Core", "DomainCore\Domain.Core.csproj", "{489C1D9D-E5AD-4768-A8A0-F496ABC692C0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Interfaces", "DomainInterfaces\Domain.Interfaces.csproj", "{DBDCF6DD-54E2-482D-9532-A5453E538257}"
 EndProject
