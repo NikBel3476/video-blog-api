@@ -2,8 +2,8 @@
 
 namespace Services.Interfaces
 {
-	internal interface IRegistration
+	public interface IRegistration
 	{
-		void Register(User user);
+		void Register(Account account);
 	}
 }

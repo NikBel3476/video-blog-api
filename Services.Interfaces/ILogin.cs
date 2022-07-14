@@ -4,6 +4,6 @@ namespace Services.Interfaces
 {
 	public interface ILogin
 	{
-		void Login(User user);
+		void Login(Account account);
 	}
 }

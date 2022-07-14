@@ -2,8 +2,8 @@
 
 namespace Services.Interfaces
 {
-	internal interface ILogout
+	public interface ILogout
 	{
-		void Logout(User user);
+		void Logout(Account account);
 	}
 }
