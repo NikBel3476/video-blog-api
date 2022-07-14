@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "video_blog_api", "video_blo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DomainCore", "DomainCore\DomainCore.csproj", "{489C1D9D-E5AD-4768-A8A0-F496ABC692C0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Interfaces", "DomainInterfaces\Domain.Interfaces.csproj", "{DBDCF6DD-54E2-482D-9532-A5453E538257}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{489C1D9D-E5AD-4768-A8A0-F496ABC692C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{489C1D9D-E5AD-4768-A8A0-F496ABC692C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{489C1D9D-E5AD-4768-A8A0-F496ABC692C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBDCF6DD-54E2-482D-9532-A5453E538257}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBDCF6DD-54E2-482D-9532-A5453E538257}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBDCF6DD-54E2-482D-9532-A5453E538257}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBDCF6DD-54E2-482D-9532-A5453E538257}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
