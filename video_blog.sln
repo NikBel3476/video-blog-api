@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "video_blog_api", "video_blog_api\video_blog_api.csproj", "{44DB07F1-B0C9-4022-9759-F6C6B93307CE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "video_blog_api", "video_blog_api\video_blog_api.csproj", "{44DB07F1-B0C9-4022-9759-F6C6B93307CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DomainCore", "DomainCore\DomainCore.csproj", "{489C1D9D-E5AD-4768-A8A0-F496ABC692C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{44DB07F1-B0C9-4022-9759-F6C6B93307CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44DB07F1-B0C9-4022-9759-F6C6B93307CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{44DB07F1-B0C9-4022-9759-F6C6B93307CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{489C1D9D-E5AD-4768-A8A0-F496ABC692C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{489C1D9D-E5AD-4768-A8A0-F496ABC692C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{489C1D9D-E5AD-4768-A8A0-F496ABC692C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{489C1D9D-E5AD-4768-A8A0-F496ABC692C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -8,7 +8,7 @@ namespace video_blog_api.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	[Authorize]
+	//[Authorize]
 	public class UsersController : ControllerBase
 	{
 		private IUserRepository _userRepository;
