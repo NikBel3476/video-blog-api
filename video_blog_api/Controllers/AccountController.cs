@@ -17,7 +17,6 @@ namespace video_blog_api.Controllers
 		private JwtService _jwtService;
 
 		public AccountController(
-			IConfiguration configuration,
 			IUserRepository userRepository,
 			JwtService jwtService
 		)
