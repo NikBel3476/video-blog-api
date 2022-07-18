@@ -1,13 +1,13 @@
-﻿using Domain.Core;
+﻿using Domain.Core.Entities;
 using Services.Interfaces;
 
 namespace Infrastructure.Business
 {
 	public class AccountRegistration : IRegistration
 	{
-		public void Register(Account account)
+		public string Register(Account account)
 		{
-			throw new NotImplementedException();
+			throw new NotImplementationException();
 		}
 	}
 }

@@ -1,4 +1,4 @@
-﻿using Domain.Core;
+﻿using Domain.Core.Entities;
 using Domain.Interfaces;
 
 namespace Infrastructure.Data.Repositories

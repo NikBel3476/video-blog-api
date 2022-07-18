@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Domain.Core.Entities;
+using Infrastructure.Business;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using video_blog_api.Data.Models;
-using video_blog_api.Domain.Models;
-using video_blog_api.Domain.Repositories;
 using video_blog_api.Security;
-using video_blog_api.Utils;
 using video_blog_api.Utils.Jwt;
 
 namespace video_blog_api.Controllers
@@ -13,23 +11,23 @@ namespace video_blog_api.Controllers
 	[ApiController]
 	public class AccountController : ControllerBase
 	{
-		private readonly IUserRepository _userRepository;
+		private AccountRegistration _accountRegistration;
 		private JwtService _jwtService;
 
 		public AccountController(
-			IUserRepository userRepository,
+			AccountRegistration accountRegistration,
 			JwtService jwtService
 		)
 		{
-			_userRepository = userRepository;
+			_accountRegistration = accountRegistration;
 			_jwtService = jwtService;
 		}
 
 		[AllowAnonymous]
 		[HttpPost("registration")]
-		public async Task<ActionResult<string>> CreateUser(UserDTO userDto)
+		public async Task<ActionResult<string>> CreateUser(Account account)
 		{
-			User user = CustomUserMap.MapToData(userDto);
+			var result = _accountRegistration.Register(account);
 			var candidate = await _userRepository.FindOne(userDto.login);
 			if (candidate is not null)
 				return BadRequest("Пользователь с таким логином уже существует");

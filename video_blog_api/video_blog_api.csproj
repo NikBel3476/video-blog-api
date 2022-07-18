@@ -32,4 +32,9 @@
     <None Include="D:\Files\Learning\Developments\CS\video_blog\video_blog_api\.editorconfig" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Infrastructure.Business\Infrastructure.Business.csproj" />
+    <ProjectReference Include="..\Infrastructure.Data\Infrastructure.Data.csproj" />
+  </ItemGroup>
+
 </Project>

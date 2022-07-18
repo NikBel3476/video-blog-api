@@ -1,4 +1,4 @@
-﻿using Domain.Core;
+﻿using Domain.Core.Entities;
 using Services.Interfaces;
 
 namespace Infrastructure.Business

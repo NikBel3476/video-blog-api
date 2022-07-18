@@ -1,10 +1,9 @@
 ﻿using System.Text;
+using Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using video_blog_api.Data.Database;
-using video_blog_api.Data.Repository;
-using video_blog_api.Domain.Repositories;
+
 using video_blog_api.Utils.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,10 +25,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 });
 
 builder.Services.AddControllers();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddSingleton(new JwtService(builder.Configuration));
 
-builder.Services.AddDbContext<ApplicationDbContext>(options => 
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
 	options.UseNpgsql(builder.Configuration.GetConnectionString("videoBlogCon")));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
