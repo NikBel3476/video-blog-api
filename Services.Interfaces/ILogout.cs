@@ -4,6 +4,6 @@ namespace Services.Interfaces
 {
 	public interface ILogout
 	{
-		LogoutResult Logout<LogoutResult>(Account account);
+		void Logout(Account account);
 	}
 }

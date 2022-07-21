@@ -4,6 +4,6 @@ namespace Services.Interfaces
 {
 	public interface IRegistration
 	{
-		RegisterResult Register<RegisterResult>(Account account);
+		void Register(Account account);
 	}
 }

@@ -5,9 +5,9 @@ namespace Infrastructure.Business
 {
 	public class AccountRegistration : IRegistration
 	{
-		public string Register(Account account)
+		public void Register(Account account)
 		{
-			throw new NotImplementationException();
+			throw new NotImplementedException();
 		}
 	}
 }
