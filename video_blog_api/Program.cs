@@ -5,7 +5,6 @@ using Infrastructure.Data.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-
 using video_blog_api.Utils.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
