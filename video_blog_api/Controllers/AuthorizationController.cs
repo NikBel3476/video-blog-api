@@ -8,12 +8,13 @@ namespace video_blog_api.Controllers
 	[ApiController]
 	public class AuthorizationController : ControllerBase
 	{
-		[HttpPost]
+		[HttpPost("login")]
 		public async Task<ActionResult<LoginResponse>> Login(LoginRequest request)
 		{
 			return StatusCode(501);
 		}
 
+		[HttpPost("registration")]
 		public async Task<ActionResult<RegistrationResponse>> Registration(RegistrationRequest request)
 		{
 			return StatusCode(501);
