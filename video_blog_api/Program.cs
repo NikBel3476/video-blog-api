@@ -1,7 +1,6 @@
 ﻿using System.Text;
-using Domain.Interfaces.Repositories;
 using Infrastructure.Data;
-using Infrastructure.Data.Repositories;
+using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -27,10 +26,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 
 builder.Services.AddControllers();
 builder.Services.AddSingleton(new JwtService(builder.Configuration));
-builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 	options.UseNpgsql(builder.Configuration.GetConnectionString("videoBlogCon")));
+builder.Services.AddSingleton<UnitOfWork>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
