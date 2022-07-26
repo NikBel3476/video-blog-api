@@ -11,15 +11,13 @@ namespace video_blog_api.Controllers
 	[ApiController]
 	public class AccountController : ControllerBase
 	{
-		private AccountRegistration _accountRegistration;
+		private readonly AuthenticationSevice _authenticationService;
 		private JwtService _jwtService;
 
 		public AccountController(
-			AccountRegistration accountRegistration,
 			JwtService jwtService
 		)
 		{
-			_accountRegistration = accountRegistration;
 			_jwtService = jwtService;
 		}
 
@@ -50,33 +48,6 @@ namespace video_blog_api.Controllers
 				return BadRequest("Неверный пароль");
 
 			return Ok(_jwtService.GenerateJwtToken(user));
-		}
-
-		// FIXME: replace id to token
-		[HttpDelete("delete")]
-		public async Task<ActionResult<UserDTO>> DeleteUser(long id)
-		{
-
-			var user = await _userRepository.FindOne(id);
-			if (user is null)
-				return NotFound("Пользователь не найден");
-			var deletedUser = await _userRepository.Delete(user);
-			return Ok(deletedUser);
-		}
-
-		[HttpPut("update")]
-		public async Task<ActionResult> UpdatePerson(UserDTO user)
-		{
-			return StatusCode(501);
-			//try
-			//{
-			//	await _userRepository.Update(user);
-			//	return true;
-			//}
-			//catch (Exception)
-			//{
-			//	return false;
-			//}
 		}
 	}
 }
