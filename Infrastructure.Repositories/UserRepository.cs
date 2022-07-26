@@ -12,12 +12,17 @@ namespace Infrastructure.Data.Repositories
 			_context = context;
 		}
 
-		public User Get(long id)
+		public Task<User?> FindAsync(long id)
 		{
 			throw new NotImplementedException();
 		}
 
-		public IEnumerable<User> GetAll()
+		public Task<User?> FindAsync(string name)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Task<IEnumerable<User>> FindAllAsync()
 		{
 			throw new NotImplementedException();
 		}

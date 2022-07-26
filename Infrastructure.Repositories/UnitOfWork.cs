@@ -8,22 +8,35 @@ namespace Infrastructure.Repositories
 		private readonly ApplicationDbContext _context;
 		private bool _disposed;
 
-		private AccountRepository? accountRepository;
+		private UserRepository? _userRepository;
+		private AccountRepository? _accountRepository;
 
 		public UnitOfWork(ApplicationDbContext context)
 		{
 			_context = context;
 		}
 
+		public UserRepository User
+		{
+			get
+			{
+				if (_userRepository == null)
+				{
+					_userRepository = new UserRepository(_context);
+				}
+				return _userRepository;
+			}
+		}
+
 		public AccountRepository Account
 		{
 			get
 			{
-				if (accountRepository == null)
+				if (_accountRepository == null)
 				{
-					accountRepository = new AccountRepository(_context);
+					_accountRepository = new AccountRepository(_context);
 				}
-				return accountRepository;
+				return _accountRepository;
 			}
 		}
 
