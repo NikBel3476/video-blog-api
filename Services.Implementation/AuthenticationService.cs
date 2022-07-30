@@ -21,8 +21,8 @@ namespace Services.Implementation
 
 		public async Task<RegistrationResponse> RegisterAsync(RegistrationRequest request)
 		{
-			var existingUser = await _unitOfWork.User.FindAsync(request.Name);
-			if (existingUser != null)
+			var userWithSameLogin = await _unitOfWork.User.FindAsync(request.Login);
+			if (userWithSameLogin != null)
 			{
 				throw new Exception("User already exist");
 			}
