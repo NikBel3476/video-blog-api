@@ -1,7 +1,8 @@
 ﻿using Domain.Core.Entities;
 using Domain.Interfaces.Repositories;
+using Infrastructure.Data;
 
-namespace Infrastructure.Data.Repositories
+namespace Infrastructure.Repositories
 {
 	public class AccountRepository : IAccountRepository
 	{

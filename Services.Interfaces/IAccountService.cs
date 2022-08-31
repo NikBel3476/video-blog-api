@@ -1,9 +1,11 @@
-﻿namespace Services.Interfaces
+﻿using Domain.Core.Authentication;
+
+namespace Services.Interfaces
 {
 	public interface IAccountService
 	{
-		void Login();
-		void Registration();
-		void Logout();
+		Task<LoginResponse> LoginAsync(LoginRequest request);
+		Task<RegistrationResponse> RegistrationAsync(RegistrationRequest request);
+		Task LogoutAsync();
 	}
 }

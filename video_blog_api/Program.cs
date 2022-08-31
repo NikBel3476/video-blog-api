@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using Domain.Interfaces.Repositories;
 using Infrastructure.Data;
-using Infrastructure.Data.Repositories;
+using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -21,9 +21,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 		ValidIssuer = builder.Configuration.GetSection("Jwt:Issuer").Value,
 		ValidAudience = builder.Configuration.GetSection("Jwt:Audience").Value,
 		IssuerSigningKey =
-			new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:Key").Value))
+			new SymmetricSecurityKey(
+				Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:Key").Value)
+			)
 	};
 });
+builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
 builder.Services.AddSingleton(new JwtService(builder.Configuration));

@@ -1,6 +1,8 @@
-﻿using Domain.Core.Entities;
+﻿using Domain.Core.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Services.Interfaces;
+using video_blog_api.Domain.Models;
 using video_blog_api.Security;
 using video_blog_api.Utils.Jwt;
 
@@ -10,21 +12,22 @@ namespace video_blog_api.Controllers
 	[ApiController]
 	public class AccountController : ControllerBase
 	{
-		private readonly AuthenticationSevice _authenticationService;
-		private JwtService _jwtService;
+		private readonly IAccountService _accountService;
+		private readonly JwtService _jwtService;
 
 		public AccountController(
-			JwtService jwtService
+			JwtService jwtService,
+			IAccountService accountService
 		)
 		{
 			_jwtService = jwtService;
+			_accountService = accountService;
 		}
-
-		[AllowAnonymous]
+		
 		[HttpPost("registration")]
-		public async Task<ActionResult<string>> CreateUser(Account account)
+		public async Task<ActionResult<string>> Registration(RegistrationRequest request)
 		{
-			var result = _accountRegistration.Register(account);
+			var result = await _accountService.RegistrationAsync(request);
 			var candidate = await _userRepository.FindOne(userDto.login);
 			if (candidate is not null)
 				return BadRequest("Пользователь с таким логином уже существует");

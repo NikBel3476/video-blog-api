@@ -1,7 +1,7 @@
 ﻿using Domain.Core.Entities;
 using Domain.Interfaces.Repositories;
 
-namespace Infrastructure.Data.Repositories
+namespace Infrastructure.Repositories
 {
 	public class UserRepository : IUserRepository
 	{
