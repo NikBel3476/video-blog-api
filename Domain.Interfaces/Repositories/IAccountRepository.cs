@@ -4,7 +4,8 @@ namespace Domain.Interfaces.Repositories
 {
 	public interface IAccountRepository
 	{
-		void Create(Account account);
+		Task<Account?> FindByLoginAsync(string login);
+		Task<Account> CreateAsync(Account account);
 		void Update(Account account);
 		void Delete(Account account);
 	}

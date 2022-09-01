@@ -1,4 +1,6 @@
-﻿using Domain.Core.Authentication;
+﻿using System.Net;
+using Domain.Core.Authentication;
+using Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
@@ -27,15 +29,16 @@ namespace video_blog_api.Controllers
 		[HttpPost("registration")]
 		public async Task<ActionResult<string>> Registration(RegistrationRequest request)
 		{
-			var result = await _accountService.RegistrationAsync(request);
-			var candidate = await _userRepository.FindOne(userDto.login);
-			if (candidate is not null)
-				return BadRequest("Пользователь с таким логином уже существует");
+			try
+			{
+				return Ok(await _accountService.RegistrationAsync(request));
+			} catch (ApiException e)
+			{
+				if (e.StatusCode == HttpStatusCode.BadRequest)
+					return BadRequest(e.Message);
 
-			user.passwordHash = PasswordSecurity.GeneratePasswordHash(userDto.password);
-			var createdUser = await _userRepository.Create(user);
-
-			return Ok(_jwtService.GenerateJwtToken(createdUser));
+				return StatusCode((int)HttpStatusCode.InternalServerError);
+			}
 		}
 
 		[AllowAnonymous]

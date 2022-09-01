@@ -33,6 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Exceptions\Exceptions.csproj" />
     <ProjectReference Include="..\Infrastructure.Business\Infrastructure.Business.csproj" />
     <ProjectReference Include="..\Infrastructure.Data\Infrastructure.Data.csproj" />
     <ProjectReference Include="..\Infrastructure.Repositories\Infrastructure.Repositories.csproj" />
