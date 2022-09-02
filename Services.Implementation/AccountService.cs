@@ -1,49 +1,104 @@
-﻿using System.Net;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Net;
+using System.Security.Claims;
+using System.Text;
 using Domain.Core.Authentication;
 using Domain.Core.Entities;
 using Domain.Interfaces.Repositories;
 using Exceptions;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using Services.Interfaces;
+using Services.Settings;
 
 namespace Services.Implementation
 {
 	public class AccountService : IAccountService
 	{
+		private readonly UserManager<User> _userManager;
 		private readonly IAccountRepository _accountRepository;
+		private readonly JwtSettings _jwtSettings;
 		
-		public AccountService(IAccountRepository accountRepository)
+		public AccountService(
+			IAccountRepository accountRepository,
+			UserManager<User> userManager,
+			JwtSettings jwtSettings
+		)
 		{
 			_accountRepository = accountRepository;
+			_userManager = userManager;
+			_jwtSettings = jwtSettings;
 		}
-		public async Task Login(LoginRequest request)
+		
+		public async Task<LoginResponse> LoginAsync(LoginRequest request)
 		{
 			throw new NotImplementedException();
 		}
 		
 		public async Task<RegistrationResponse> RegistrationAsync(RegistrationRequest request)
 		{
-			var existingUser = await _accountRepository.FindByLoginAsync(request.Login);
-			if (existingUser != null)
+			var existingUser = await _accountRepository.FindByEmailAsync(request.Email);
+			if (existingUser == null)
 			{
 				throw new ApiException(
 					HttpStatusCode.BadRequest, 
-					$"User with the login '{request.Login}' already exists"
+					$"User with the Email '{request.Email}' already exists"
 				);
 			}
 
 			// TODO: complete registration logic
-			var account = new Account
+			var user = new User
 			{
-				
+				UserName = request.UserName,
+				Email = request.Email
 			};
-			var user = _accountRepository.CreateAsync(account);
 
-			return new RegistrationResponse();
+			var result = await _userManager.CreateAsync(user, request.Password);
+			if (!result.Succeeded)
+				throw new ApiException(HttpStatusCode.BadRequest, $"{result.Errors.ToList()}");
+
+			var accessToken = await GenerateJwtToken(
+				user,
+				Convert.ToInt64(TimeSpan.FromHours(3).TotalMilliseconds)
+			);
+			var refreshToken = await GenerateJwtToken(
+				user,
+				Convert.ToInt64(TimeSpan.FromDays(3).TotalMilliseconds)
+			);
+
+			return new RegistrationResponse
+			{
+				AccessToken = new JwtSecurityTokenHandler().WriteToken(accessToken),
+				RefreshToken = new JwtSecurityTokenHandler().WriteToken(refreshToken)
+			};
 		}
 
-		public Task Logout()
+		public Task LogoutAsync()
 		{
 			throw new NotImplementedException();
+		}
+
+		private async Task<JwtSecurityToken> GenerateJwtToken(User user, long durationInMs)
+		{
+			var userClaims = await _userManager.GetClaimsAsync(user);
+			var claims = new[]
+			{
+				new Claim(JwtRegisteredClaimNames.Name, user.UserName),
+				new Claim(JwtRegisteredClaimNames.Email, user.Email), new Claim("id", user.Id)
+			}.Union(userClaims);
+			
+			var signingCredentials = new SigningCredentials(
+				new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key)),
+				SecurityAlgorithms.HmacSha256
+			);
+
+			return new JwtSecurityToken(
+				issuer: _jwtSettings.Issuer,
+				audience: _jwtSettings.Audience,
+				claims: claims,
+				expires: DateTime.UtcNow.AddMilliseconds(durationInMs),
+				signingCredentials: signingCredentials
+			);
 		}
 	}
 }

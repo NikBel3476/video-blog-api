@@ -1,4 +1,5 @@
-﻿using Domain.Core.Entities;
+﻿/*
+using Domain.Core.Entities;
 using Domain.Interfaces.Repositories;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -14,8 +15,8 @@ namespace Infrastructure.Repositories
 			_context = context;
 		}
 
-		public async Task<Account?> FindByLoginAsync(string login) =>
-			await _context.Accounts.FirstOrDefaultAsync(u => u.Login == login);
+		public async Task<Account?> FindByEmailAsync(string email) =>
+			await _context.Accounts.FirstOrDefaultAsync(u => u.Email == email);
 
 		public void Create(Account account)
 		{
@@ -33,3 +34,4 @@ namespace Infrastructure.Repositories
 		}
 	}
 }
+*/

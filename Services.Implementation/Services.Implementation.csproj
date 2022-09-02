@@ -7,10 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Exceptions\Exceptions.csproj" />
+    <ProjectReference Include="..\Services.Exceptions\Services.Exceptions.csproj" />
     <ProjectReference Include="..\Infrastructure.Repositories\Infrastructure.Repositories.csproj" />
     <ProjectReference Include="..\Services.Interfaces\Services.Interfaces.csproj" />
+    <ProjectReference Include="..\Services.Settings\Services.Settings.csproj" />
     <ProjectReference Include="..\Services.Utils\Services.Utils.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.21.0" />
   </ItemGroup>
 
 </Project>

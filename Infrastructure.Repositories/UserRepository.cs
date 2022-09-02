@@ -1,4 +1,5 @@
-﻿using Domain.Core.Entities;
+﻿/*
+using Domain.Core.Entities;
 using Domain.Interfaces.Repositories;
 
 namespace Infrastructure.Repositories
@@ -28,3 +29,4 @@ namespace Infrastructure.Repositories
 		}
 	}
 }
+*/

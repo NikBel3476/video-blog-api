@@ -12,6 +12,5 @@ namespace Infrastructure.Data
 		}
 
 		public DbSet<User> Users => Set<User>();
-		public DbSet<Account> Accounts => Set<Account>();
 	}
 }

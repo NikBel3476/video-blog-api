@@ -27,7 +27,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Implementation", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services.Utils", "Services.Utils\Services.Utils.csproj", "{D1FB315D-4CAA-4EE1-8308-A3613A8E075D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exceptions", "Exceptions\Exceptions.csproj", "{43CD588A-A99B-455F-9AAA-A49D91CDE1DA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services.Exceptions", "Services.Exceptions\Services.Exceptions.csproj", "{43CD588A-A99B-455F-9AAA-A49D91CDE1DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services.Settings", "Services.Settings\Services.Settings.csproj", "{49A62ECA-1E9C-4C26-8C8C-44B7C07793DA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +77,10 @@ Global
 		{43CD588A-A99B-455F-9AAA-A49D91CDE1DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43CD588A-A99B-455F-9AAA-A49D91CDE1DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43CD588A-A99B-455F-9AAA-A49D91CDE1DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49A62ECA-1E9C-4C26-8C8C-44B7C07793DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49A62ECA-1E9C-4C26-8C8C-44B7C07793DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49A62ECA-1E9C-4C26-8C8C-44B7C07793DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49A62ECA-1E9C-4C26-8C8C-44B7C07793DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -89,6 +95,7 @@ Global
 		{39563CEA-BB5C-4ABC-B963-AD4DB59F730B} = {D5C8069F-BA02-4812-AE50-E8B38968A4E6}
 		{D1FB315D-4CAA-4EE1-8308-A3613A8E075D} = {D5C8069F-BA02-4812-AE50-E8B38968A4E6}
 		{43CD588A-A99B-455F-9AAA-A49D91CDE1DA} = {D5C8069F-BA02-4812-AE50-E8B38968A4E6}
+		{49A62ECA-1E9C-4C26-8C8C-44B7C07793DA} = {D5C8069F-BA02-4812-AE50-E8B38968A4E6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C8222EEC-3871-49E3-8908-E7332E3C2026}

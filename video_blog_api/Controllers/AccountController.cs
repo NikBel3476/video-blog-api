@@ -45,14 +45,15 @@ namespace video_blog_api.Controllers
 		[HttpPost("login")]
 		public async Task<ActionResult<string>> Login(UserDTO userDto)
 		{
-			var user = await _userRepository.FindOne(userDto.login);
+			return StatusCode(501);
+			/*var user = await _userRepository.FindOne(userDto.login);
 			if (user is null)
 				return BadRequest("Пользователь с таким логином не найден");
 
 			if (!PasswordSecurity.VerifyPassword(userDto.password, user.passwordHash))
 				return BadRequest("Неверный пароль");
 
-			return Ok(_jwtService.GenerateJwtToken(user));
+			return Ok(_jwtService.GenerateJwtToken(user));*/
 		}
 	}
 }

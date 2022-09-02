@@ -1,4 +1,5 @@
-﻿using Domain.Core.Authentication;
+﻿/*
+using Domain.Core.Authentication;
 using Domain.Core.Entities;
 using Infrastructure.Repositories;
 using Services.Interfaces;
@@ -41,3 +42,4 @@ namespace Services.Implementation
 		}
 	}
 }
+*/
