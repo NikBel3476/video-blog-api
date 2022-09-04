@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace Exceptions;
+namespace Services.Exceptions;
 
 public class ApiException : Exception
 {
