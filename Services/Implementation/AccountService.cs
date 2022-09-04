@@ -77,10 +77,9 @@ namespace Services.Implementation
 			var userClaims = await _userManager.GetClaimsAsync(user);
 			var claims = new[]
 			{
-				new Claim(JwtRegisteredClaimNames.Name, user.UserName), new Claim(
-					JwtRegisteredClaimNames.Email, user.Email),
-				new Claim("id", user.Id
-				)
+				new Claim(JwtRegisteredClaimNames.Name, user.UserName),
+				new Claim(JwtRegisteredClaimNames.Email, user.Email),
+				new Claim("id", user.Id)
 			}.Union(userClaims);
 
 			var signingCredentials = new SigningCredentials(
