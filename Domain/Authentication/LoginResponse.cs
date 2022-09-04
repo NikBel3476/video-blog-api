@@ -1,4 +1,4 @@
-﻿namespace Domain.Core.Authentication
+﻿namespace Domain.Authentication
 {
 	public class LoginResponse
 	{
