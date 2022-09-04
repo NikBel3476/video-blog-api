@@ -1,6 +1,15 @@
-﻿using System.Net;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
+using Domain.Authentication;
+using Domain.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using Services.Exceptions;
+using Services.Interfaces;
+using Services.Settings;
 
 namespace Services.Implementation
 {

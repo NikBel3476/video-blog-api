@@ -1,6 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-
-namespace Domain.Authentication
+﻿namespace Domain.Authentication
 {
 	public class RegistrationResponse
 	{

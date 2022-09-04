@@ -29,8 +29,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
     <ProjectReference Include="..\Services.Exceptions\Services.Exceptions.csproj" />
     <ProjectReference Include="..\Services.Settings\Services.Settings.csproj" />
+    <ProjectReference Include="..\Services\Services.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
-﻿namespace Services.Utils.Password
+﻿/*
+namespace Services.Utils
 {
 	public static class PasswordSecurity
 	{
@@ -8,3 +9,4 @@
 			BCrypt.Net.BCrypt.Verify(passwordToSubmit, hashedPassword);
 	}
 }
+*/

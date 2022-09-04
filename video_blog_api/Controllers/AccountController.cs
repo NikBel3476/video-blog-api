@@ -1,13 +1,13 @@
 ﻿using System.Net;
-using Domain.Core.Authentication;
-using Exceptions;
+using Domain.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Services.Exceptions;
 using Services.Interfaces;
 
 namespace video_blog_api.Controllers
 {
-	[Route("api/[controller]")]
+	[Microsoft.AspNetCore.Components.Route("api/[controller]")]
 	[ApiController]
 	public class AccountController : ControllerBase
 	{
