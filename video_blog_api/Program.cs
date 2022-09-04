@@ -1,18 +1,37 @@
-﻿using System.Text;
+﻿using System.Reflection;
+using System.Text;
+using Domain.Core.Entities;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Services.Implementation;
+using Services.Interfaces;
 using Services.Settings;
-using video_blog_api.Utils.Jwt;
-// using Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddControllers();
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+	options.UseNpgsql(
+		builder.Configuration.GetConnectionString("videoBlogConnection"),
+		b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)
+	));
+builder.Services.AddDbContext<IdentityContext>(options =>
+	options.UseNpgsql(
+		builder.Configuration.GetConnectionString("videoBlogConnection"),
+		b => b.MigrationsAssembly(typeof(IdentityContext).Assembly.FullName)
+	));
+
+builder.Services.AddIdentity<User, IdentityRole>()
+	.AddEntityFrameworkStores<IdentityContext>();
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
-	options.TokenValidationParameters = new TokenValidationParameters()
+	options.TokenValidationParameters = new TokenValidationParameters
 	{
 		ValidateIssuer = true,
 		ValidateAudience = true,
@@ -28,15 +47,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 });
 builder.Services.AddAuthorization();
 
-builder.Services.AddControllers();
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
-builder.Services.AddSingleton(new JwtService(builder.Configuration));
+
+// builder.Services.AddSingleton(new JwtService(builder.Configuration));
+
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 // builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 // builder.Services.AddScoped<IUserRepository, UserRepository>();
-
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-	options.UseNpgsql(builder.Configuration.GetConnectionString("videoBlogCon")));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

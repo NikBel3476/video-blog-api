@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿/*
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using video_blog_api.Domain.Models;
 using video_blog_api.Domain.Repositories;
@@ -34,3 +35,4 @@ namespace video_blog_api.Controllers
 		}
 	}
 }
+*/

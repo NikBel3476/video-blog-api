@@ -19,7 +19,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.21.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.5" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.6" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.21.0" />
   </ItemGroup>
@@ -29,14 +29,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="D:\Files\Learning\Developments\CS\video_blog\video_blog_api\.editorconfig" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Services.Exceptions\Services.Exceptions.csproj" />
     <ProjectReference Include="..\Infrastructure.Business\Infrastructure.Business.csproj" />
     <ProjectReference Include="..\Infrastructure.Data\Infrastructure.Data.csproj" />
     <ProjectReference Include="..\Infrastructure.Repositories\Infrastructure.Repositories.csproj" />
+    <ProjectReference Include="..\Services.Implementation\Services.Implementation.csproj" />
     <ProjectReference Include="..\Services.Settings\Services.Settings.csproj" />
   </ItemGroup>
 

@@ -4,9 +4,9 @@ using System.Security.Claims;
 using System.Text;
 using Domain.Core.Authentication;
 using Domain.Core.Entities;
-using Domain.Interfaces.Repositories;
 using Exceptions;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Services.Interfaces;
 using Services.Settings;
@@ -16,32 +16,26 @@ namespace Services.Implementation
 	public class AccountService : IAccountService
 	{
 		private readonly UserManager<User> _userManager;
-		private readonly IAccountRepository _accountRepository;
 		private readonly JwtSettings _jwtSettings;
-		
-		public AccountService(
-			IAccountRepository accountRepository,
-			UserManager<User> userManager,
-			JwtSettings jwtSettings
-		)
+
+		public AccountService(UserManager<User> userManager, IOptions<JwtSettings> jwtSettings)
 		{
-			_accountRepository = accountRepository;
 			_userManager = userManager;
-			_jwtSettings = jwtSettings;
+			_jwtSettings = jwtSettings.Value;
 		}
-		
+
 		public async Task<LoginResponse> LoginAsync(LoginRequest request)
 		{
 			throw new NotImplementedException();
 		}
-		
+
 		public async Task<RegistrationResponse> RegistrationAsync(RegistrationRequest request)
 		{
-			var existingUser = await _accountRepository.FindByEmailAsync(request.Email);
+			var existingUser = await _userManager.FindByEmailAsync(request.Email);
 			if (existingUser == null)
 			{
 				throw new ApiException(
-					HttpStatusCode.BadRequest, 
+					HttpStatusCode.BadRequest,
 					$"User with the Email '{request.Email}' already exists"
 				);
 			}
@@ -83,10 +77,12 @@ namespace Services.Implementation
 			var userClaims = await _userManager.GetClaimsAsync(user);
 			var claims = new[]
 			{
-				new Claim(JwtRegisteredClaimNames.Name, user.UserName),
-				new Claim(JwtRegisteredClaimNames.Email, user.Email), new Claim("id", user.Id)
+				new Claim(JwtRegisteredClaimNames.Name, user.UserName), new Claim(
+					JwtRegisteredClaimNames.Email, user.Email),
+				new Claim("id", user.Id
+				)
 			}.Union(userClaims);
-			
+
 			var signingCredentials = new SigningCredentials(
 				new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key)),
 				SecurityAlgorithms.HmacSha256

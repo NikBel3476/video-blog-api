@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿/*
+using AutoMapper;
 using video_blog_api.Data.Models;
 using video_blog_api.Domain.Models;
 
@@ -31,3 +32,4 @@ namespace video_blog_api.Utils
 		}
 	}
 }
+*/

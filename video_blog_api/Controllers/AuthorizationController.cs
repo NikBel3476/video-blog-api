@@ -1,5 +1,5 @@
-﻿using Domain.Core.Authentication;
-using Microsoft.AspNetCore.Http;
+﻿/*
+using Domain.Core.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 namespace video_blog_api.Controllers
@@ -21,3 +21,4 @@ namespace video_blog_api.Controllers
 		}
 	}
 }
+*/

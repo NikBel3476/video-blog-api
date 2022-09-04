@@ -4,6 +4,5 @@ namespace Domain.Core.Entities
 {
 	public class User : IdentityUser
 	{
-		
 	}
 }
