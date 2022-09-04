@@ -30,10 +30,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Services.Exceptions\Services.Exceptions.csproj" />
-    <ProjectReference Include="..\Infrastructure.Business\Infrastructure.Business.csproj" />
-    <ProjectReference Include="..\Infrastructure.Data\Infrastructure.Data.csproj" />
-    <ProjectReference Include="..\Infrastructure.Repositories\Infrastructure.Repositories.csproj" />
-    <ProjectReference Include="..\Services.Implementation\Services.Implementation.csproj" />
     <ProjectReference Include="..\Services.Settings\Services.Settings.csproj" />
   </ItemGroup>
 
