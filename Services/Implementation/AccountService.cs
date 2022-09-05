@@ -16,30 +16,64 @@ namespace Services.Implementation
 	public class AccountService : IAccountService
 	{
 		private readonly UserManager<User> _userManager;
+		private readonly SignInManager<User> _signInManager;
 		private readonly JwtSettings _jwtSettings;
 
-		public AccountService(UserManager<User> userManager, IOptions<JwtSettings> jwtSettings)
+		public AccountService(
+			UserManager<User> userManager,
+			SignInManager<User> signInManager,
+			IOptions<JwtSettings> jwtSettings)
 		{
 			_userManager = userManager;
+			_signInManager = signInManager;
 			_jwtSettings = jwtSettings.Value;
 		}
 
 		public async Task<LoginResponse> LoginAsync(LoginRequest request)
 		{
-			throw new NotImplementedException();
+			var user = await _userManager.FindByEmailAsync(request.Email);
+			if (user == null)
+				throw new ApiException(HttpStatusCode.BadRequest,"User was not found");
+
+			var result = await _signInManager.PasswordSignInAsync(
+				user,
+				request.Password,
+				false,
+				false
+			);
+
+			if (!result.Succeeded)
+				throw new ApiException(HttpStatusCode.BadRequest, "Wrong password");
+
+			JwtSecurityToken accessToken = await GenerateJwtTokenAsync(
+				user,
+				Convert.ToInt64(TimeSpan.FromHours(3).TotalMilliseconds)
+			);
+
+			JwtSecurityToken refreshToken = await GenerateJwtTokenAsync(
+				user,
+				Convert.ToInt64(TimeSpan.FromDays(3).TotalMilliseconds)
+			);
+
+			return new LoginResponse
+			{
+				Id = user.Id,
+				UserName = user.UserName,
+				Email = user.Email,
+				AccessToken = new JwtSecurityTokenHandler().WriteToken(accessToken),
+				RefreshToken = new JwtSecurityTokenHandler().WriteToken(refreshToken) 
+			};
 		}
 
 		public async Task<RegistrationResponse> RegistrationAsync(RegistrationRequest request)
 		{
 			var existingUser = await _userManager.FindByEmailAsync(request.Email);
 			if (existingUser != null)
-			{
 				throw new ApiException(
 					HttpStatusCode.BadRequest,
 					$"User with the Email '{request.Email}' already exists"
 				);
-			}
-			
+
 			var user = new User
 			{
 				UserName = request.UserName,
@@ -48,13 +82,18 @@ namespace Services.Implementation
 
 			var result = await _userManager.CreateAsync(user, request.Password);
 			if (!result.Succeeded)
-				throw new ApiException(HttpStatusCode.BadRequest, $"{result.Errors.ToList()[0].Description}");
+				throw new ApiException(
+					HttpStatusCode.BadRequest,
+					$"{result.Errors.ToList()[0].Description}"
+				);
+			
+			await _signInManager.SignInAsync(user, false);
 
-			var accessToken = await GenerateJwtToken(
+			var accessToken = await GenerateJwtTokenAsync(
 				user,
 				Convert.ToInt64(TimeSpan.FromHours(3).TotalMilliseconds)
 			);
-			var refreshToken = await GenerateJwtToken(
+			var refreshToken = await GenerateJwtTokenAsync(
 				user,
 				Convert.ToInt64(TimeSpan.FromDays(3).TotalMilliseconds)
 			);
@@ -71,7 +110,7 @@ namespace Services.Implementation
 			throw new NotImplementedException();
 		}
 
-		private async Task<JwtSecurityToken> GenerateJwtToken(User user, long durationInMs)
+		private async Task<JwtSecurityToken> GenerateJwtTokenAsync(User user, long durationInMs)
 		{
 			var userClaims = await _userManager.GetClaimsAsync(user);
 			var claims = new[]

@@ -36,17 +36,19 @@ namespace video_blog_api.Controllers
 
 		[AllowAnonymous]
 		[HttpPost("login")]
-		public async Task<ActionResult<string>> Login(LoginRequest request)
+		public async Task<ActionResult<LoginResponse>> Login(LoginRequest request)
 		{
-			return StatusCode(501);
-			/*var user = await _userRepository.FindOne(userDto.login);
-			if (user is null)
-				return BadRequest("Пользователь с таким логином не найден");
+			try
+			{
+				return await _accountService.LoginAsync(request);
+			}
+			catch (ApiException e)
+			{
+				if (e.StatusCode == HttpStatusCode.BadRequest)
+					return BadRequest(e.Message);
 
-			if (!PasswordSecurity.VerifyPassword(userDto.password, user.passwordHash))
-				return BadRequest("Неверный пароль");
-
-			return Ok(_jwtService.GenerateJwtToken(user));*/
+				return StatusCode((int)HttpStatusCode.InternalServerError);
+			}
 		}
 	}
 }
