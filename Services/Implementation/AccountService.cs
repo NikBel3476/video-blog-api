@@ -32,15 +32,14 @@ namespace Services.Implementation
 		public async Task<RegistrationResponse> RegistrationAsync(RegistrationRequest request)
 		{
 			var existingUser = await _userManager.FindByEmailAsync(request.Email);
-			if (existingUser == null)
+			if (existingUser != null)
 			{
 				throw new ApiException(
 					HttpStatusCode.BadRequest,
 					$"User with the Email '{request.Email}' already exists"
 				);
 			}
-
-			// TODO: complete registration logic
+			
 			var user = new User
 			{
 				UserName = request.UserName,
@@ -49,7 +48,7 @@ namespace Services.Implementation
 
 			var result = await _userManager.CreateAsync(user, request.Password);
 			if (!result.Succeeded)
-				throw new ApiException(HttpStatusCode.BadRequest, $"{result.Errors.ToList()}");
+				throw new ApiException(HttpStatusCode.BadRequest, $"{result.Errors.ToList()[0].Description}");
 
 			var accessToken = await GenerateJwtToken(
 				user,
