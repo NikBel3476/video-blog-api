@@ -16,12 +16,12 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 	options.UseNpgsql(
-		builder.Configuration.GetConnectionString("videoBlogConnection"),
+		builder.Configuration.GetConnectionString("DefaultConnection"),
 		b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)
 	));
 builder.Services.AddDbContext<IdentityContext>(options =>
 	options.UseNpgsql(
-		builder.Configuration.GetConnectionString("videoBlogConnection"),
+		builder.Configuration.GetConnectionString("DefaultConnection"),
 		b => b.MigrationsAssembly(typeof(IdentityContext).Assembly.FullName)
 	));
 
