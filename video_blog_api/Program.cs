@@ -60,12 +60,29 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-	options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+	options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
 	{
 		Description = "Standard Authorization header using th Bearer scheme: 'Bearer {token}'",
 		In = ParameterLocation.Header,
 		Name = "Authorization",
-		Type = SecuritySchemeType.ApiKey
+		Type = SecuritySchemeType.Http,
+		Scheme = "bearer",
+		BearerFormat = "JWT",
+	});
+
+	options.AddSecurityRequirement(new OpenApiSecurityRequirement
+	{
+		{
+			new OpenApiSecurityScheme
+			{
+				Reference = new OpenApiReference
+				{
+					Type = ReferenceType.SecurityScheme,
+					Id = "Bearer"
+				}
+			},
+			new List<string>()
+		}
 	});
 });
 
