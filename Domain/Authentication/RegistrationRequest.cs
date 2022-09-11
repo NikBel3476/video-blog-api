@@ -13,7 +13,7 @@ namespace Domain.Authentication
 		[MinLength(6, ErrorMessage = "The password length must be at least 6 characters")]
 		public string Password { get; set; } = string.Empty;
 
-		[Required]
+		[Required(ErrorMessage = "No password confirmation entered")]
 		[Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
 		public string ConfirmPassword { get; set; } = string.Empty;
 	}

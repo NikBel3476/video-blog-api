@@ -22,8 +22,8 @@ namespace Services.Implementation
 		public AccountService(
 			UserManager<User> userManager,
 			SignInManager<User> signInManager,
-			IOptions<JwtSettings> jwtSettings)
-		{
+			IOptions<JwtSettings> jwtSettings
+		) {
 			_userManager = userManager;
 			_signInManager = signInManager;
 			_jwtSettings = jwtSettings.Value;

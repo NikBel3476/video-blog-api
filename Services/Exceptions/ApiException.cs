@@ -4,7 +4,7 @@ namespace Services.Exceptions;
 
 public class ApiException : Exception
 {
-	public HttpStatusCode StatusCode;
+	public readonly HttpStatusCode StatusCode;
 
 	public ApiException(HttpStatusCode statusCode) : base()
 	{
