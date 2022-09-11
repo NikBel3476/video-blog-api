@@ -7,7 +7,7 @@ using Services.Interfaces;
 
 namespace video_blog_api.Controllers
 {
-	[Microsoft.AspNetCore.Components.Route("api/[controller]")]
+	[Route("api/[controller]")]
 	[ApiController]
 	public class AccountController : ControllerBase
 	{
@@ -19,6 +19,9 @@ namespace video_blog_api.Controllers
 		}
 
 		[HttpPost("registration")]
+		[Produces("application/json")]
+		[ProducesResponseType(StatusCodes.Status201Created)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		public async Task<ActionResult<RegistrationResponse>> Registration(RegistrationRequest request)
 		{
 			try
@@ -33,9 +36,11 @@ namespace video_blog_api.Controllers
 				return StatusCode((int)HttpStatusCode.InternalServerError);
 			}
 		}
-
-		[AllowAnonymous]
+		
 		[HttpPost("login")]
+		[Produces("application/json")]
+		[ProducesResponseType(StatusCodes.Status201Created)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		public async Task<ActionResult<LoginResponse>> Login(LoginRequest request)
 		{
 			try

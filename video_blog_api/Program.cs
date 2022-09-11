@@ -60,14 +60,21 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
+	options.SwaggerDoc("v1", new OpenApiInfo
+	{
+		Version = "v1",
+		Title = "Video blog API",
+		Description = "Video blog API documentation"
+	});
+	
 	options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
 	{
-		Description = "Standard Authorization header using th Bearer scheme: 'Bearer {token}'",
-		In = ParameterLocation.Header,
 		Name = "Authorization",
+		In = ParameterLocation.Header,
 		Type = SecuritySchemeType.Http,
 		Scheme = "bearer",
 		BearerFormat = "JWT",
+		Description = "Standard Authorization header using th Bearer scheme: 'Bearer {token}'"
 	});
 
 	options.AddSecurityRequirement(new OpenApiSecurityRequirement
