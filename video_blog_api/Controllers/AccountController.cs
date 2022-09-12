@@ -39,7 +39,7 @@ namespace video_blog_api.Controllers
 		
 		[HttpPost("login")]
 		[Produces("application/json")]
-		[ProducesResponseType(StatusCodes.Status201Created)]
+		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		public async Task<ActionResult<LoginResponse>> Login(LoginRequest request)
 		{

@@ -5,8 +5,8 @@ namespace Services.Interfaces
 {
 	public interface IUserService
 	{
-		Task<User> GetUserById(string id);
-		Task<User> GetUserByEmail(string email);
-		Task<GetAllResponse> GetAll(int page, int pageSize);
+		Task<User> GetUserByIdAsync(string id);
+		Task<User> GetUserByEmailAsync(string email);
+		Task<GetAllResponse> GetAllAsync(int page, int pageSize);
 	}
 }

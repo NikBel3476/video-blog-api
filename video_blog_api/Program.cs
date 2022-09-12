@@ -39,10 +39,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 		ValidateIssuerSigningKey = true,
 		ValidIssuer = builder.Configuration.GetSection("Jwt:Issuer").Value,
 		ValidAudience = builder.Configuration.GetSection("Jwt:Audience").Value,
-		IssuerSigningKey =
-			new SymmetricSecurityKey(
-				Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:Key").Value)
-			)
+		IssuerSigningKey = new SymmetricSecurityKey(
+			Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:Key").Value)
+		)
 	};
 });
 builder.Services.AddAuthorization();
@@ -52,6 +51,7 @@ builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"))
 // builder.Services.AddSingleton(new JwtService(builder.Configuration));
 
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 // builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 // builder.Services.AddScoped<IUserRepository, UserRepository>();
