@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿/*
+using Domain.Entities;
 
 namespace Domain.Interfaces
 {
@@ -9,3 +10,4 @@ namespace Domain.Interfaces
 		Task<IEnumerable<User>> FindAllAsync();
 	}
 }
+*/

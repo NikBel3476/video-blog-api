@@ -15,13 +15,13 @@ namespace Services.Implementation
 {
 	public class AccountService : IAccountService
 	{
-		private readonly UserManager<User> _userManager;
-		private readonly SignInManager<User> _signInManager;
+		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly SignInManager<ApplicationUser> _signInManager;
 		private readonly JwtSettings _jwtSettings;
 
 		public AccountService(
-			UserManager<User> userManager,
-			SignInManager<User> signInManager,
+			UserManager<ApplicationUser> userManager,
+			SignInManager<ApplicationUser> signInManager,
 			IOptions<JwtSettings> jwtSettings
 		) {
 			_userManager = userManager;
@@ -74,7 +74,7 @@ namespace Services.Implementation
 					$"User with the Email '{request.Email}' already exists"
 				);
 
-			var user = new User
+			var user = new ApplicationUser
 			{
 				UserName = request.UserName,
 				Email = request.Email
@@ -110,7 +110,7 @@ namespace Services.Implementation
 			throw new NotImplementedException();
 		}
 
-		private async Task<JwtSecurityToken> GenerateJwtTokenAsync(User user, long durationInMs)
+		private async Task<JwtSecurityToken> GenerateJwtTokenAsync(ApplicationUser user, long durationInMs)
 		{
 			var userClaims = await _userManager.GetClaimsAsync(user);
 			var claims = new[]

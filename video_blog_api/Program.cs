@@ -26,7 +26,7 @@ builder.Services.AddDbContext<IdentityContext>(options =>
 		b => b.MigrationsAssembly(typeof(IdentityContext).Assembly.FullName)
 	));
 
-builder.Services.AddIdentity<User, IdentityRole>()
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 	.AddEntityFrameworkStores<IdentityContext>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
