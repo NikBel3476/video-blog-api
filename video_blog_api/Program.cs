@@ -15,20 +15,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-	options.UseNpgsql(
-		builder.Configuration.GetConnectionString("DefaultConnection"),
-		b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)
-	));
-builder.Services.AddDbContext<IdentityContext>(options =>
-	options.UseNpgsql(
-		builder.Configuration.GetConnectionString("DefaultConnection"),
-		b => b.MigrationsAssembly(typeof(IdentityContext).Assembly.FullName)
-	));
-
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-	.AddEntityFrameworkStores<IdentityContext>();
-
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
 	options.TokenValidationParameters = new TokenValidationParameters
@@ -44,17 +30,25 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 		)
 	};
 });
-builder.Services.AddAuthorization();
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+	options.UseNpgsql(
+		builder.Configuration.GetConnectionString("DefaultConnection"),
+		b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)
+	));
+builder.Services.AddDbContext<IdentityContext>(options =>
+	options.UseNpgsql(
+		builder.Configuration.GetConnectionString("DefaultConnection"),
+		b => b.MigrationsAssembly(typeof(IdentityContext).Assembly.FullName)
+	));
+
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+	.AddEntityFrameworkStores<IdentityContext>();
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 
-// builder.Services.AddSingleton(new JwtService(builder.Configuration));
-
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IUserService, UserService>();
-
-// builder.Services.AddScoped<IAccountRepository, AccountRepository>();
-// builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -66,7 +60,7 @@ builder.Services.AddSwaggerGen(options =>
 		Title = "Video blog API",
 		Description = "Video blog API documentation"
 	});
-	
+
 	options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
 	{
 		Name = "Authorization",
