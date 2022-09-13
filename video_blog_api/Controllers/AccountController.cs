@@ -7,8 +7,8 @@ using Services.Interfaces;
 
 namespace video_blog_api.Controllers
 {
-	[Route("api/[controller]")]
 	[ApiController]
+	[Route("api/[controller]")]
 	public class AccountController : ControllerBase
 	{
 		private readonly IAccountService _accountService;

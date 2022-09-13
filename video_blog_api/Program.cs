@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Net;
+using System.Text;
 using Domain.Entities;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -12,10 +13,27 @@ using Services.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+	options.UseNpgsql(
+		builder.Configuration.GetConnectionString("DefaultConnection"),
+		b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)
+	));
+builder.Services.AddDbContext<IdentityContext>(options =>
+	options.UseNpgsql(
+		builder.Configuration.GetConnectionString("DefaultConnection"),
+		b => b.MigrationsAssembly(typeof(IdentityContext).Assembly.FullName)
+	));
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+	.AddEntityFrameworkStores<IdentityContext>()
+	.AddDefaultTokenProviders();
+
+builder.Services.AddAuthentication(options =>
+{
+	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+	options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
 {
 	options.TokenValidationParameters = new TokenValidationParameters
 	{
@@ -29,26 +47,31 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 			Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:Key").Value)
 		)
 	};
+
+	options.Events = new JwtBearerEvents
+	{
+		OnChallenge = context =>
+		{
+			context.HandleResponse();
+			context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+			context.Response.ContentType = "text/plain";
+			return context.Response.WriteAsync("You are not authorized");
+		},
+		OnForbidden = context =>
+		{
+			context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+			context.Response.ContentType = "text/plain";
+			return context.Response.WriteAsync("You are not allowed to access this resource");
+		}
+	};
 });
-
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-	options.UseNpgsql(
-		builder.Configuration.GetConnectionString("DefaultConnection"),
-		b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)
-	));
-builder.Services.AddDbContext<IdentityContext>(options =>
-	options.UseNpgsql(
-		builder.Configuration.GetConnectionString("DefaultConnection"),
-		b => b.MigrationsAssembly(typeof(IdentityContext).Assembly.FullName)
-	));
-
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-	.AddEntityFrameworkStores<IdentityContext>();
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

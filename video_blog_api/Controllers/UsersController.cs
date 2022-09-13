@@ -5,9 +5,9 @@ using Services.Interfaces;
 
 namespace video_blog_api.Controllers
 {
-	[Route("api/[controller]")]
-	[ApiController]
 	[Authorize]
+	[ApiController]
+	[Route("api/[controller]")]
 	public class UsersController : ControllerBase
 	{
 		private readonly IUserService _userService;
