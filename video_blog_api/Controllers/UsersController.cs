@@ -1,6 +1,8 @@
-﻿using Domain.API.Users;
+﻿using System.Net;
+using Domain.API.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Services.Exceptions;
 using Services.Interfaces;
 
 namespace video_blog_api.Controllers
@@ -29,9 +31,22 @@ namespace video_blog_api.Controllers
 		}
 
 		[HttpGet("{id}")]
+		[Produces("application/json")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		public async Task<ActionResult> GetUser(string id)
 		{
-			return StatusCode(StatusCodes.Status501NotImplemented);
+			try
+			{
+				return Ok(await _userService.GetUserByIdAsync(id));
+			}
+			catch (ApiException e)
+			{
+				if (e.StatusCode == HttpStatusCode.NotFound)
+					return NotFound(e.Message);
+
+				return StatusCode((int)HttpStatusCode.InternalServerError);
+			}
 		}
 	}
 }
