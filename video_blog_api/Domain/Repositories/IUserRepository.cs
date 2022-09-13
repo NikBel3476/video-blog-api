@@ -1,4 +1,5 @@
-﻿using video_blog_api.Data.Models;
+﻿/*
+using video_blog_api.Data.Models;
 
 namespace video_blog_api.Domain.Repositories
 {
@@ -12,3 +13,4 @@ namespace video_blog_api.Domain.Repositories
 		Task<User> Delete(User user);
 	}
 }
+*/

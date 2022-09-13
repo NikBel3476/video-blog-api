@@ -1,4 +1,5 @@
-﻿namespace video_blog_api.Domain.Models
+﻿/*
+namespace video_blog_api.Domain.Models
 {
 	public class UserDTO
 	{
@@ -7,3 +8,4 @@
 		public string password { get; set; } = string.Empty;
 	}
 }
+*/

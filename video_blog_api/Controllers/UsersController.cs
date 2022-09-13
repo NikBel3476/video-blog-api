@@ -1,36 +1,37 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Domain.API.Users;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using video_blog_api.Domain.Models;
-using video_blog_api.Domain.Repositories;
-using video_blog_api.Utils;
+using Services.Interfaces;
 
 namespace video_blog_api.Controllers
 {
-	[Route("api/[controller]")]
-	[ApiController]
 	[Authorize]
+	[ApiController]
+	[Route("api/[controller]")]
 	public class UsersController : ControllerBase
 	{
-		private IUserRepository _userRepository;
+		private readonly IUserService _userService;
 
-		public UsersController(IUserRepository userRepository)
+		public UsersController(IUserService userService)
 		{
-			_userRepository = userRepository;
+			_userService = userService;
 		}
 
 		[HttpGet]
-		public async Task<ActionResult<IEnumerable<UserDTO>?>> GetAllUsers()
+		[Produces("application/json")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		public async Task<ActionResult<GetAllResponse>> GetAll(
+			[FromQuery] int page = 1,
+			[FromQuery] int pageSize = 10
+		)
 		{
-			return Ok(CustomUserMap.MapToDTO(await _userRepository.FindAll()));
+			return Ok(await _userService.GetAllAsync(page, pageSize));
 		}
 
 		[HttpGet("{id}")]
-		public async Task<ActionResult<UserDTO?>> GetUser(long id)
+		public async Task<ActionResult> GetUser(string id)
 		{
-			var user = await _userRepository.FindOne(id);
-			if (user is null)
-				return NotFound("Пользователь не найден");
-			return Ok(CustomUserMap.MapToDTO(user));
+			return StatusCode(StatusCodes.Status501NotImplemented);
 		}
 	}
 }

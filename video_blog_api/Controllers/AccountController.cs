@@ -1,85 +1,59 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Net;
+using Domain.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using video_blog_api.Data.Models;
-using video_blog_api.Domain.Models;
-using video_blog_api.Domain.Repositories;
-using video_blog_api.Security;
-using video_blog_api.Utils;
-using video_blog_api.Utils.Jwt;
+using Services.Exceptions;
+using Services.Interfaces;
 
 namespace video_blog_api.Controllers
 {
-	[Route("api/[controller]")]
 	[ApiController]
+	[Route("api/[controller]")]
 	public class AccountController : ControllerBase
 	{
-		private readonly IUserRepository _userRepository;
-		private JwtService _jwtService;
+		private readonly IAccountService _accountService;
 
-		public AccountController(
-			IConfiguration configuration,
-			IUserRepository userRepository,
-			JwtService jwtService
-		)
+		public AccountController(IAccountService accountService)
 		{
-			_userRepository = userRepository;
-			_jwtService = jwtService;
+			_accountService = accountService;
 		}
 
-		[AllowAnonymous]
 		[HttpPost("registration")]
-		public async Task<ActionResult<string>> CreateUser(UserDTO userDto)
+		[Produces("application/json")]
+		[ProducesResponseType(StatusCodes.Status201Created)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		public async Task<ActionResult<RegistrationResponse>> Registration(RegistrationRequest request)
 		{
-			User user = CustomUserMap.MapToData(userDto);
-			var candidate = await _userRepository.FindOne(userDto.login);
-			if (candidate is not null)
-				return BadRequest("Пользователь с таким логином уже существует");
+			try
+			{
+				return Ok(await _accountService.RegistrationAsync(request));
+			}
+			catch (ApiException e)
+			{
+				if (e.StatusCode == HttpStatusCode.BadRequest)
+					return BadRequest(e.Message);
 
-			user.passwordHash = PasswordSecurity.GeneratePasswordHash(userDto.password);
-			var createdUser = await _userRepository.Create(user);
-
-			return Ok(_jwtService.GenerateJwtToken(createdUser));
+				return StatusCode((int)HttpStatusCode.InternalServerError);
+			}
 		}
-
-		[AllowAnonymous]
+		
 		[HttpPost("login")]
-		public async Task<ActionResult<string>> Login(UserDTO userDto)
+		[Produces("application/json")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		public async Task<ActionResult<LoginResponse>> Login(LoginRequest request)
 		{
-			var user = await _userRepository.FindOne(userDto.login);
-			if (user is null)
-				return BadRequest("Пользователь с таким логином не найден");
+			try
+			{
+				return await _accountService.LoginAsync(request);
+			}
+			catch (ApiException e)
+			{
+				if (e.StatusCode == HttpStatusCode.BadRequest)
+					return BadRequest(e.Message);
 
-			if (!PasswordSecurity.VerifyPassword(userDto.password, user.passwordHash))
-				return BadRequest("Неверный пароль");
-
-			return Ok(_jwtService.GenerateJwtToken(user));
-		}
-
-		// FIXME: replace id to token
-		[HttpDelete("delete")]
-		public async Task<ActionResult<UserDTO>> DeleteUser(long id)
-		{
-
-			var user = await _userRepository.FindOne(id);
-			if (user is null)
-				return NotFound("Пользователь не найден");
-			var deletedUser = await _userRepository.Delete(user);
-			return Ok(deletedUser);
-		}
-
-		[HttpPut("update")]
-		public async Task<ActionResult> UpdatePerson(UserDTO user)
-		{
-			return StatusCode(501);
-			//try
-			//{
-			//	await _userRepository.Update(user);
-			//	return true;
-			//}
-			//catch (Exception)
-			//{
-			//	return false;
-			//}
+				return StatusCode((int)HttpStatusCode.InternalServerError);
+			}
 		}
 	}
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿/*
+using Microsoft.EntityFrameworkCore;
 using video_blog_api.Data.Database;
 using video_blog_api.Data.Models;
 using video_blog_api.Domain.Repositories;
@@ -51,3 +52,4 @@ namespace video_blog_api.Data.Repository
 		}
 	}
 }
+*/

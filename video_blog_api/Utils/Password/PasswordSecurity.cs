@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿/*
+using System.Security.Cryptography;
 using System.Text;
 
 namespace video_blog_api.Security
@@ -18,3 +19,4 @@ namespace video_blog_api.Security
 			BCrypt.Net.BCrypt.Verify(passwordToSubmit, hashedPassword);
 	}
 }
+*/
