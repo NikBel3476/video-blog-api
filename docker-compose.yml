@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  video_blog_api:
+    image: ${DOCKER_REGISTRY-}videoblogapi
+    build:
+      context: .
+      dockerfile: video_blog_api/Dockerfile
