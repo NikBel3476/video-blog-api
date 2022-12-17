@@ -126,6 +126,24 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 }
 
+using (var scope = app.Services.CreateScope())
+{
+	Console.WriteLine("Applying migrations");
+	var services = scope.ServiceProvider;
+	var identityContext = services.GetRequiredService<IdentityContext>();
+	if (identityContext.Database.GetPendingMigrations().Any())
+	{
+		identityContext.Database.Migrate();
+	}
+
+	var applicationContext = services.GetRequiredService<ApplicationDbContext>();
+	if (applicationContext.Database.GetPendingMigrations().Any())
+	{
+		applicationContext.Database.Migrate();
+	}
+	Console.WriteLine("Migrations completed successfully");
+}
+
 app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
