@@ -71,6 +71,13 @@ builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"))
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
+builder.Services.AddCors(options =>
+	options.AddPolicy(
+		"AllowAll",
+		policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()
+	)
+);
+
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -119,8 +126,27 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 }
 
-app.UseCors();
-// app.UseHttpsRedirection();
+using (var scope = app.Services.CreateScope())
+{
+	Console.WriteLine("Applying migrations");
+	var services = scope.ServiceProvider;
+	var identityContext = services.GetRequiredService<IdentityContext>();
+	if (identityContext.Database.GetPendingMigrations().Any())
+	{
+		identityContext.Database.Migrate();
+	}
+
+	var applicationContext = services.GetRequiredService<ApplicationDbContext>();
+	if (applicationContext.Database.GetPendingMigrations().Any())
+	{
+		applicationContext.Database.Migrate();
+	}
+	Console.WriteLine("Migrations completed successfully");
+}
+
+app.UseCors("AllowAll");
+
+app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();

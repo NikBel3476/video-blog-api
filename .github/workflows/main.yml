@@ -19,8 +19,8 @@ jobs:
       with:
         dotnet-version: ${{ matrix.dotnet }}
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore video_blog.sln
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build video_blog.sln --no-restore
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test video_blog.sln --no-build --verbosity normal

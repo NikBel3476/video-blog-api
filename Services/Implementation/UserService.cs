@@ -1,7 +1,9 @@
-﻿using Domain.API.Users;
+﻿using System.Net;
+using Domain.API.Users;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Services.Exceptions;
 using Services.Interfaces;
 
 namespace Services.Implementation
@@ -15,9 +17,12 @@ namespace Services.Implementation
 			_userManager = userManager;
 		}
 		
-		public Task<User> GetUserByIdAsync(string id)
+		public async Task<User?> GetUserByIdAsync(string id)
 		{
-			throw new NotImplementedException();
+			var user = await _userManager.FindByIdAsync(id);
+			if (user == null)
+				throw new ApiException(HttpStatusCode.NotFound, "User not found");
+			return  new User { Id = user.Id, Email = user.Email, UserName = user.UserName };
 		}
 
 		public Task<User> GetUserByEmailAsync(string email)
