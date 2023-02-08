@@ -13,14 +13,15 @@ using Services.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
+const string dbConnectionString = "DefaultConnection";
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 	options.UseNpgsql(
-		builder.Configuration.GetConnectionString("DefaultConnection"),
+		builder.Configuration.GetConnectionString(dbConnectionString),
 		b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)
 	));
 builder.Services.AddDbContext<IdentityContext>(options =>
 	options.UseNpgsql(
-		builder.Configuration.GetConnectionString("DefaultConnection"),
+		builder.Configuration.GetConnectionString(dbConnectionString),
 		b => b.MigrationsAssembly(typeof(IdentityContext).Assembly.FullName)
 	));
 
