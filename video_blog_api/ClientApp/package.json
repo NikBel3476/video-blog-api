@@ -1,5 +1,5 @@
 {
-	"name": "video-blog-web-client",
+	"name": "video_blog",
 	"version": "0.1.0",
 	"private": true,
 	"description": "video-blog-web-client",
@@ -9,6 +9,7 @@
 	},
 	"scripts": {
 		"dev": "next dev",
+		"dev:https": "node https-server.js",
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
