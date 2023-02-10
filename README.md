@@ -1,5 +1,8 @@
 # video_blog
 
+### To clone the repository
+`git clone --recurse-submodules https://github.com/NikBel3476/video-blog-api.git`
+
 ### Prerequisites
 1. .NET 7.x.x or above
 2. Node.js 18.x.x or above
