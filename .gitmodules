@@ -1,0 +1,4 @@
+[submodule "video_blog_api/ClientApp"]
+	path = video_blog_api/ClientApp
+	url = https://github.com/NikBel3476/video-blog-web-client.git
+	branch = main
