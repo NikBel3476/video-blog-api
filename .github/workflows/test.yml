@@ -11,15 +11,21 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
         dotnet: [ '7.0.x' ]
+        node-version: [18.x]
 
     steps:
     - uses: actions/checkout@v3
       with:
         submodules: true
-    - name: Setup .NET Core
+    - name: Setup .NET Core ${{ matrix.dotnet }}
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: ${{ matrix.dotnet }}
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: "npm"
     - name: Restore dependencies
       run: dotnet restore video_blog.sln
     - name: Build
