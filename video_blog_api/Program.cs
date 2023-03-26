@@ -2,6 +2,7 @@
 using System.Text;
 using Domain.Entities;
 using Infrastructure.Data;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -29,43 +30,63 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 	.AddEntityFrameworkStores<IdentityContext>()
 	.AddDefaultTokenProviders();
 
-builder.Services.AddAuthentication(options =>
-{
-	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-	options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
-{
-	options.TokenValidationParameters = new TokenValidationParameters
-	{
-		ValidateIssuer = true,
-		ValidateAudience = true,
-		ValidateLifetime = true,
-		ValidateIssuerSigningKey = true,
-		ValidIssuer = builder.Configuration.GetSection("Jwt:Issuer").Value,
-		ValidAudience = builder.Configuration.GetSection("Jwt:Audience").Value,
-		IssuerSigningKey = new SymmetricSecurityKey(
-			Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:Key").Value)
-		)
-	};
+builder.Services.AddIdentityServer()
+	.AddApiAuthorization<ApplicationUser, AuthorizationDbContext>();
 
-	options.Events = new JwtBearerEvents
+builder.Services.AddAuthentication(options =>
 	{
-		OnChallenge = context =>
+		options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+		options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+		options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+	})
+	.AddIdentityServerJwt()
+	.AddJwtBearer(options =>
+	{
+		var signingKey = builder.Configuration.GetSection("Jwt:Key").Value;
+		if (signingKey == null)
 		{
-			context.HandleResponse();
-			context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-			context.Response.ContentType = "text/plain";
-			return context.Response.WriteAsync("You are not authorized");
-		},
-		OnForbidden = context =>
-		{
-			context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-			context.Response.ContentType = "text/plain";
-			return context.Response.WriteAsync("You are not allowed to access this resource");
+			throw new Exception("No jwt key is configured in the 'Jwt:Key' configuration section");
 		}
-	};
-});
+
+		options.TokenValidationParameters = new TokenValidationParameters
+		{
+			ValidateIssuer = true,
+			ValidateAudience = true,
+			ValidateLifetime = true,
+			ValidateIssuerSigningKey = true,
+			ValidIssuer = builder.Configuration.GetSection("Jwt:Issuer").Value,
+			ValidAudience = builder.Configuration.GetSection("Jwt:Audience").Value,
+			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey))
+		};
+
+		options.Events = new JwtBearerEvents
+		{
+			OnChallenge = context =>
+			{
+				context.HandleResponse();
+				context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+				context.Response.ContentType = "text/plain";
+				return context.Response.WriteAsync("You are not authorized");
+			},
+			OnForbidden = context =>
+			{
+				context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+				context.Response.ContentType = "text/plain";
+				return context.Response.WriteAsync("You are not allowed to access this resource");
+			}
+		};
+	}).AddGoogle(googleOptions =>
+	{
+		var clientId = builder.Configuration["Authentication:Google:ClientId"];
+		var clientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+		if (clientId == null || clientSecret == null)
+		{
+			throw new Exception("No client_id and client_secret configured for google authorization");
+		}
+
+		googleOptions.ClientId = clientId;
+		googleOptions.ClientSecret = clientSecret;
+	});
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 
@@ -143,13 +164,14 @@ app.UseCors("AllowAll");
 
 // app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.UseRouting();
 
-app.UseAuthentication();
+app.UseIdentityServer();
+// app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
 app.MapFallbackToFile("index.html");
 
 app.Run();
