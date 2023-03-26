@@ -59,6 +59,32 @@ namespace video_blog_api.Controllers
 			}
 		}
 
+		[HttpGet("signin-google")]
+		public async Task<IActionResult> GoogleLogin()
+		{
+			var redirectUrl = Url.Action("GoogleResponse", "Account");
+			if (redirectUrl == null)
+			{
+				return StatusCode((int)HttpStatusCode.InternalServerError);
+			}
+
+			return await _accountService.LoginGoogleAsync(redirectUrl);
+		}
+
+		[HttpGet("google-response")]
+		public async Task<IActionResult> GoogleResponse()
+		{
+			try
+			{
+				var user = await _accountService.GoogleSignInResponse();
+				return Ok(user);
+			}
+			catch (ApiException e)
+			{
+				return BadRequest(e.Message);
+			}
+		}
+
 		[HttpGet("getData")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		public async Task<ActionResult<String>> GetData()

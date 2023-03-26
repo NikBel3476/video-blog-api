@@ -2,6 +2,7 @@
 using System.Text;
 using Domain.Entities;
 using Infrastructure.Data;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -25,47 +26,71 @@ builder.Services.AddDbContext<IdentityContext>(options =>
 		b => b.MigrationsAssembly(typeof(IdentityContext).Assembly.FullName)
 	));
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+	{
+		options.User.AllowedUserNameCharacters =
+			"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+/ ";
+	})
 	.AddEntityFrameworkStores<IdentityContext>()
 	.AddDefaultTokenProviders();
 
-builder.Services.AddAuthentication(options =>
-{
-	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-	options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
-{
-	options.TokenValidationParameters = new TokenValidationParameters
-	{
-		ValidateIssuer = true,
-		ValidateAudience = true,
-		ValidateLifetime = true,
-		ValidateIssuerSigningKey = true,
-		ValidIssuer = builder.Configuration.GetSection("Jwt:Issuer").Value,
-		ValidAudience = builder.Configuration.GetSection("Jwt:Audience").Value,
-		IssuerSigningKey = new SymmetricSecurityKey(
-			Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:Key").Value)
-		)
-	};
+builder.Services.AddIdentityServer()
+	.AddApiAuthorization<ApplicationUser, IdentityContext>();
 
-	options.Events = new JwtBearerEvents
+builder.Services.AddAuthentication(options =>
 	{
-		OnChallenge = context =>
+		options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+		options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+		options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+	})
+	.AddIdentityServerJwt()
+	.AddJwtBearer(options =>
+	{
+		options.TokenValidationParameters = new TokenValidationParameters
 		{
-			context.HandleResponse();
-			context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-			context.Response.ContentType = "text/plain";
-			return context.Response.WriteAsync("You are not authorized");
-		},
-		OnForbidden = context =>
+			ValidateIssuer = true,
+			ValidateAudience = true,
+			ValidateLifetime = true,
+			ValidateIssuerSigningKey = true,
+			ValidIssuer = builder.Configuration.GetSection("Jwt:Issuer").Value ??
+			              throw new Exception("No jwt issuer is configured in the 'Jwt:Issuer' configuration section"),
+			ValidAudience = builder.Configuration.GetSection("Jwt:Audience").Value ??
+			                throw new Exception(
+				                "No jwt audience is configured in the 'Jwt:Audience' configuration section"),
+			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+				builder.Configuration.GetSection("Jwt:Key").Value ??
+				throw new Exception("No jwt key is configured in the 'Jwt:Key' configuration section")))
+		};
+
+		options.Events = new JwtBearerEvents
 		{
-			context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-			context.Response.ContentType = "text/plain";
-			return context.Response.WriteAsync("You are not allowed to access this resource");
+			OnChallenge = context =>
+			{
+				context.HandleResponse();
+				context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+				context.Response.ContentType = "text/plain";
+				return context.Response.WriteAsync("You are not authorized");
+			},
+			OnForbidden = context =>
+			{
+				context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+				context.Response.ContentType = "text/plain";
+				return context.Response.WriteAsync("You are not allowed to access this resource");
+			}
+		};
+	}).AddGoogle(googleOptions =>
+	{
+		var clientId = builder.Configuration["Authentication:Google:ClientId"];
+		var clientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+		if (clientId == null || clientSecret == null)
+		{
+			throw new Exception("No client_id and client_secret configured for google authorization");
 		}
-	};
-});
+
+		googleOptions.ClientId = clientId;
+		googleOptions.ClientSecret = clientSecret;
+		googleOptions.SignInScheme = IdentityConstants.ExternalScheme;
+	});
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 
@@ -143,13 +168,14 @@ app.UseCors("AllowAll");
 
 // app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.UseRouting();
 
+app.UseIdentityServer();
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
 app.MapFallbackToFile("index.html");
 
 app.Run();

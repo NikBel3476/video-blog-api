@@ -6,11 +6,12 @@ using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Data
 {
-	public class IdentityContext : ApiAuthorizationDbContext<ApplicationUser>
+	public class AuthorizationDbContext : ApiAuthorizationDbContext<ApplicationUser>
 	{
-		public IdentityContext(
+		public AuthorizationDbContext(
 			DbContextOptions options,
-			IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
+			IOptions<OperationalStoreOptions> operationalStoreOptions
+		) : base(options, operationalStoreOptions)
 		{
 		}
 	}
