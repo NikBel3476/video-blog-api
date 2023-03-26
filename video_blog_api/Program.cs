@@ -31,7 +31,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 	.AddDefaultTokenProviders();
 
 builder.Services.AddIdentityServer()
-	.AddApiAuthorization<ApplicationUser, AuthorizationDbContext>();
+	.AddApiAuthorization<ApplicationUser, IdentityContext>();
 
 builder.Services.AddAuthentication(options =>
 	{
@@ -42,21 +42,20 @@ builder.Services.AddAuthentication(options =>
 	.AddIdentityServerJwt()
 	.AddJwtBearer(options =>
 	{
-		var signingKey = builder.Configuration.GetSection("Jwt:Key").Value;
-		if (signingKey == null)
-		{
-			throw new Exception("No jwt key is configured in the 'Jwt:Key' configuration section");
-		}
-
 		options.TokenValidationParameters = new TokenValidationParameters
 		{
 			ValidateIssuer = true,
 			ValidateAudience = true,
 			ValidateLifetime = true,
 			ValidateIssuerSigningKey = true,
-			ValidIssuer = builder.Configuration.GetSection("Jwt:Issuer").Value,
-			ValidAudience = builder.Configuration.GetSection("Jwt:Audience").Value,
-			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey))
+			ValidIssuer = builder.Configuration.GetSection("Jwt:Issuer").Value ??
+			              throw new Exception("No jwt issuer is configured in the 'Jwt:Issuer' configuration section"),
+			ValidAudience = builder.Configuration.GetSection("Jwt:Audience").Value ??
+			                throw new Exception(
+				                "No jwt audience is configured in the 'Jwt:Audience' configuration section"),
+			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+				builder.Configuration.GetSection("Jwt:Key").Value ??
+				throw new Exception("No jwt key is configured in the 'Jwt:Key' configuration section")))
 		};
 
 		options.Events = new JwtBearerEvents
@@ -86,6 +85,7 @@ builder.Services.AddAuthentication(options =>
 
 		googleOptions.ClientId = clientId;
 		googleOptions.ClientSecret = clientSecret;
+		googleOptions.SignInScheme = IdentityConstants.ExternalScheme;
 	});
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
