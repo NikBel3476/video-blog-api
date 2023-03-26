@@ -13,14 +13,15 @@ using Services.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
+const string dbConnectionString = "DefaultConnection";
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 	options.UseNpgsql(
-		builder.Configuration.GetConnectionString("DefaultConnection"),
+		builder.Configuration.GetConnectionString(dbConnectionString),
 		b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)
 	));
 builder.Services.AddDbContext<IdentityContext>(options =>
 	options.UseNpgsql(
-		builder.Configuration.GetConnectionString("DefaultConnection"),
+		builder.Configuration.GetConnectionString(dbConnectionString),
 		b => b.MigrationsAssembly(typeof(IdentityContext).Assembly.FullName)
 	));
 
@@ -84,33 +85,26 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-	options.SwaggerDoc("v1", new OpenApiInfo
-	{
-		Version = "v1",
-		Title = "Video blog API",
-		Description = "Video blog API documentation"
-	});
+	options.SwaggerDoc("v1",
+		new OpenApiInfo { Version = "v1", Title = "Video blog API", Description = "Video blog API documentation" });
 
-	options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-	{
-		Name = "Authorization",
-		In = ParameterLocation.Header,
-		Type = SecuritySchemeType.Http,
-		Scheme = "bearer",
-		BearerFormat = "JWT",
-		Description = "Standard Authorization header using th Bearer scheme: 'Bearer {token}'"
-	});
+	options.AddSecurityDefinition("Bearer",
+		new OpenApiSecurityScheme
+		{
+			Name = "Authorization",
+			In = ParameterLocation.Header,
+			Type = SecuritySchemeType.Http,
+			Scheme = "bearer",
+			BearerFormat = "JWT",
+			Description = "Standard Authorization header using th Bearer scheme: 'Bearer {token}'"
+		});
 
 	options.AddSecurityRequirement(new OpenApiSecurityRequirement
 	{
 		{
 			new OpenApiSecurityScheme
 			{
-				Reference = new OpenApiReference
-				{
-					Type = ReferenceType.SecurityScheme,
-					Id = "Bearer"
-				}
+				Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
 			},
 			new List<string>()
 		}
@@ -141,16 +135,21 @@ using (var scope = app.Services.CreateScope())
 	{
 		applicationContext.Database.Migrate();
 	}
+
 	Console.WriteLine("Migrations completed successfully");
 }
 
 app.UseCors("AllowAll");
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapFallbackToFile("index.html");
 
 app.Run();

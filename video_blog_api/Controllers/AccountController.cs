@@ -30,12 +30,14 @@ namespace video_blog_api.Controllers
 			catch (ApiException e)
 			{
 				if (e.StatusCode == HttpStatusCode.BadRequest)
+				{
 					return BadRequest(e.Message);
+				}
 
 				return StatusCode((int)HttpStatusCode.InternalServerError);
 			}
 		}
-		
+
 		[HttpPost("login")]
 		[Produces("application/json")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
@@ -49,10 +51,19 @@ namespace video_blog_api.Controllers
 			catch (ApiException e)
 			{
 				if (e.StatusCode == HttpStatusCode.BadRequest)
+				{
 					return BadRequest(e.Message);
+				}
 
 				return StatusCode((int)HttpStatusCode.InternalServerError);
 			}
+		}
+
+		[HttpGet("getData")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		public async Task<ActionResult<String>> GetData()
+		{
+			return Ok(new { message = "Hello World!" });
 		}
 	}
 }
