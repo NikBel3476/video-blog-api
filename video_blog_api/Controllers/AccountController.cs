@@ -63,7 +63,7 @@ namespace video_blog_api.Controllers
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		public async Task<ActionResult<String>> GetData()
 		{
-			return Ok("Hello World!");
+			return Ok(new { message = "Hello World!" });
 		}
 	}
 }
