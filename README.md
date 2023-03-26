@@ -13,5 +13,10 @@
    linux => `dotnet dev-certs https -ep $HOME/.aspnet/https/video_blog.pem --format Pem --no-password`
 3. `dotnet dev-certs https --trust`
 
+### Setup credentials for google authentication
+1. Setup google credentials: https://console.cloud.google.com/apis
+2. dotnet user-secrets set "Authentication:Google:ClientId" "<client-id>"
+3. dotnet user-secrets set "Authentication:Google:ClientSecret" "<client-secret>"
+
 ### API documentation
-open `https://localhost:7240/swagger` in browser after running the project
+run project and open `https://localhost:7240/swagger` in your browser
