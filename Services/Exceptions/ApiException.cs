@@ -1,18 +1,19 @@
 ﻿using System.Net;
 
-namespace Services.Exceptions;
-
-public class ApiException : Exception
+namespace Services.Exceptions
 {
-	public readonly HttpStatusCode StatusCode;
-
-	public ApiException(HttpStatusCode statusCode) : base()
+	public class ApiException : Exception
 	{
-		StatusCode = statusCode;
-	}
+		public readonly HttpStatusCode StatusCode;
 
-	public ApiException(HttpStatusCode statusCode, string message) : base(message)
-	{
-		StatusCode = statusCode;
+		public ApiException(HttpStatusCode statusCode)
+		{
+			StatusCode = statusCode;
+		}
+
+		public ApiException(HttpStatusCode statusCode, string message) : base(message)
+		{
+			StatusCode = statusCode;
+		}
 	}
 }

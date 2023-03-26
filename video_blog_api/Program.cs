@@ -26,7 +26,11 @@ builder.Services.AddDbContext<IdentityContext>(options =>
 		b => b.MigrationsAssembly(typeof(IdentityContext).Assembly.FullName)
 	));
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+	{
+		options.User.AllowedUserNameCharacters =
+			"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+/ ";
+	})
 	.AddEntityFrameworkStores<IdentityContext>()
 	.AddDefaultTokenProviders();
 
@@ -168,7 +172,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseIdentityServer();
-// app.UseAuthentication();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
